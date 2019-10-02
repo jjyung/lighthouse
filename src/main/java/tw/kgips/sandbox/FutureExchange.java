@@ -7,10 +7,13 @@ import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 import tw.kgips.util.ConvertUtil;
 import tw.kgips.util.JsoupUtil;
+import tw.kgips.util.Util;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.text.DecimalFormat;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class FutureExchange {
@@ -25,17 +28,11 @@ public class FutureExchange {
 		return Jsoup.parse(getHtmlFile(filename));
 	}
 
-	private static void setSSL() {
-		String certFileName = "taifex.com.tw.jks";
-		ClassLoader classLoader = FutureExchange.class.getClassLoader();
-		System.setProperty("javax.net.ssl.trustStore", Objects.requireNonNull(classLoader.getResource(certFileName)).getPath());
-	}
-
 	// TODO check date
 	// 外資淨多單
-	public static String getNetForeignInvestmentFutures() throws Exception {
+	public static String getFININetAmount() throws Exception {
 
-		setSSL();
+		Util.setSSL();
 
 		Document doc = Jsoup.connect("http://www.taifex.com.tw/cht/3/futContractsDate")
 				.timeout(30000)
@@ -60,7 +57,7 @@ public class FutureExchange {
 	// put/call ratio
 	public static String getPutCallRatio() throws Exception {
 
-		setSSL();
+		Util.setSSL();
 
 		Document doc = Jsoup.connect("https://www.taifex.com.tw/cht/3/largeTraderOptQry")
 				.timeout(30000)
@@ -92,6 +89,16 @@ public class FutureExchange {
 	}
 
 	public static void main(String[] args) throws Exception {
-		System.out.println(String.format("%s 外資大台淨多單 %s 口，p/c %s，外資現貨買超 %s 億。", null, getNetForeignInvestmentFutures(), getPutCallRatio(), null));
+
+		OffsetDateTime now = OffsetDateTime.now();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd");
+
+		// 小數點第二位
+		DecimalFormat df = new DecimalFormat("##.00");
+
+		String FININetBuyAmount = df.format(ConvertUtil.toLong(TWSE.getFININetBuyAmount()) / 100000000.0);
+
+		System.out.println(String.format("%s 外資大台淨多單 %s 口，p/c %s，外資現貨買超 %s 億。",
+				formatter.format(now), getFININetAmount(), getPutCallRatio(), FININetBuyAmount));
 	}
 }
