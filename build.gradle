@@ -18,4 +18,12 @@ dependencies {
 
 	implementation("com.squareup.okhttp3:okhttp:3.14.2")
 	compile group: 'org.jsoup', name: 'jsoup', version: '1.12.1'
+
+	// https://mvnrepository.com/artifact/postgresql/postgresql
+	compile group: 'postgresql', name: 'postgresql', version: '9.0-801.jdbc4'
+
+	// https://mvnrepository.com/artifact/org.json/json
+	compile group: 'org.json', name: 'json', version: '20090211'
+
+
 }
