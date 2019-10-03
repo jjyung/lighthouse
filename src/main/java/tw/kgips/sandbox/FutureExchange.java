@@ -96,9 +96,13 @@ public class FutureExchange {
 		// 小數點第二位
 		DecimalFormat df = new DecimalFormat("##.00");
 
-		String FININetBuyAmount = df.format(ConvertUtil.toLong(TWSE.getFININetBuyAmount()) / 100000000.0);
+		Long netBuy = ConvertUtil.toLong(TWSE.getFININetBuyAmount());
 
-		System.out.println(String.format("%s 外資大台淨多單 %s 口，p/c %s，外資現貨買超 %s 億。",
-				formatter.format(now), getFININetAmount(), getPutCallRatio(), FININetBuyAmount));
+		String sellBuy = netBuy > 0 ? "買" : "賣";
+
+		String FININetBuyAmount = df.format(Math.abs(netBuy) / 100000000.0);
+
+		System.out.println(String.format("%s 外資大台淨多單 %s 口，p/c %s，外資現貨%s超 %s 億。",
+				formatter.format(now), getFININetAmount(), getPutCallRatio(), sellBuy, FININetBuyAmount));
 	}
 }
