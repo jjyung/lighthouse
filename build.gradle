@@ -8,13 +8,30 @@ version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
+// Encoding settings
+[compileJava, compileTestJava]*.options*.encoding = "UTF-8"
+
+// war settings
+war {
+	baseName = "lighthouse"
+	archiveName = baseName + ".war"
+}
+
+task explodedWar(type: Sync) {
+	into "${buildDir}/exploded"
+	with war
+}
+
 repositories {
 	mavenCentral()
 }
 
 dependencies {
-	testCompile group: 'junit', name: 'junit', version: '4.11'
+
 	testCompile group: 'junit', name: 'junit', version: '4.12'
+
+	// spring
+	compile 'org.springframework:spring-webmvc:4.1.6.RELEASE'
 
 	implementation("com.squareup.okhttp3:okhttp:3.14.2")
 	compile group: 'org.jsoup', name: 'jsoup', version: '1.12.1'
@@ -25,5 +42,6 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.json/json
 	compile group: 'org.json', name: 'json', version: '20090211'
 
+	compile 'javax.servlet:jstl:1.2'
 
 }
