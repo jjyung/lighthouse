@@ -1,5 +1,6 @@
 package tw.kgips.controller;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,7 +14,7 @@ import java.util.Map;
 @Controller
 public class WelcomeController {
 
-	//	private final Logger logger = LoggerFactory.getLogger(WelcomeController.class);
+	private static final Logger logger = Logger.getLogger(WelcomeController.class);
 	private final HelloWorldService helloWorldService;
 
 	@Autowired
@@ -24,7 +25,7 @@ public class WelcomeController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String index(Map<String, Object> model) {
 
-		//	logger.debug("index() is executed!");
+		logger.debug("index() is executed!");
 
 		model.put("title", helloWorldService.getTitle(""));
 		model.put("msg", helloWorldService.getDesc());
@@ -35,7 +36,7 @@ public class WelcomeController {
 	@RequestMapping(value = "/hello/{name:.+}", method = RequestMethod.GET)
 	public ModelAndView hello(@PathVariable("name") String name) {
 
-		//	logger.debug("hello() is executed - $name {}", name);
+		logger.debug(String.format("hello() is executed - %s {}", name));
 
 		ModelAndView model = new ModelAndView();
 		model.setViewName("index");
