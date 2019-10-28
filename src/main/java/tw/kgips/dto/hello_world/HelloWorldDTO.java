@@ -1,4 +1,4 @@
-package tw.kgips.dto.Hello;
+package tw.kgips.dto.hello_world;
 
 import tw.kgips.persistence.entity.HelloWorldEntity;
 
