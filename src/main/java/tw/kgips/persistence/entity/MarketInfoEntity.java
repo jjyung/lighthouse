@@ -2,10 +2,11 @@ package tw.kgips.persistence.entity;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
 
 @Entity
-@Table(name = "market_info")
+@Table(name = "market_info", uniqueConstraints = {
+		@UniqueConstraint(name = "market_unique_key", columnNames = {"date_time"})
+})
 public class MarketInfoEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
