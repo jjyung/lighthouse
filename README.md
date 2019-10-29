@@ -7,4 +7,4 @@ Try to be the lighthouse of the stock sea.
 - PostgreSQL 10
 
 # Preparation
-- 
+- Create a table named lighthouse in the postgres
