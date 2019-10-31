@@ -102,7 +102,7 @@ public class MarketInfoDTO {
         MarketInfoDTO dto = new MarketInfoDTO();
 
         dto.setSn(entity.getSn());
-        dto.setDateTime(entity.getDateTime());
+        dto.setDateTime(entity.getDate());
         dto.setFiniOpenInterestNetAmount(entity.getFiniOpenInterestNetAmount());
         dto.setFiniTxCost(entity.getFiniTxCost());
         dto.setLargeTradersPutCallRatio(entity.getLargeTradersPutCallRatio());

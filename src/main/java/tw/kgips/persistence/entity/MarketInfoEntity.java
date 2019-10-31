@@ -5,7 +5,7 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "market_info", uniqueConstraints = {
-		@UniqueConstraint(name = "market_unique_key", columnNames = {"date_time"})
+		@UniqueConstraint(name = "market_unique_key", columnNames = {"date"})
 })
 public class MarketInfoEntity {
 	@Id
@@ -14,8 +14,8 @@ public class MarketInfoEntity {
 	private Long sn;
 
 	// 日期
-	@Column(name = "date_time")
-	private LocalDate dateTime;
+	@Column(name = "date")
+	private LocalDate date;
 
 	// 外資留倉口數
 	@Column(name = "fini_open_interest_net_amount")
@@ -49,12 +49,12 @@ public class MarketInfoEntity {
 		this.sn = sn;
 	}
 
-	public LocalDate getDateTime() {
-		return dateTime;
+	public LocalDate getDate() {
+		return date;
 	}
 
-	public void setDateTime(LocalDate dateTime) {
-		this.dateTime = dateTime;
+	public void setDate(LocalDate dateTime) {
+		this.date = dateTime;
 	}
 
 	public Long getFiniOpenInterestNetAmount() {
