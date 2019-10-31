@@ -29,11 +29,11 @@ public class MarketInfoDaoTest {
 
         LocalDate date = OffsetDateTime.now().toLocalDate();
 
-        MarketInfoEntity entity = marketInfoDao.get(date);
+        MarketInfoEntity entity = marketInfoDao.getMarketInfoByDate(date);
 
         if (entity == null) {
             testCreate();
-            entity = marketInfoDao.get(date);
+            entity = marketInfoDao.getMarketInfoByDate(date);
         }
 
         Assert.assertNotNull(entity);
@@ -44,11 +44,11 @@ public class MarketInfoDaoTest {
     public void testUpdate() {
         LocalDate date = OffsetDateTime.now().toLocalDate();
 
-        MarketInfoEntity entity = marketInfoDao.get(date);
+        MarketInfoEntity entity = marketInfoDao.getMarketInfoByDate(date);
 
         if (entity == null) {
             testCreate();
-            entity = marketInfoDao.get(date);
+            entity = marketInfoDao.getMarketInfoByDate(date);
         }
 
         Assert.assertNotNull(entity);
@@ -63,9 +63,9 @@ public class MarketInfoDaoTest {
 
         entity.setLargeTradersPutCallRatio(assertPC);
 
-        marketInfoDao.update(entity);
+        marketInfoDao.updateMarketInfo(entity);
 
-        Assert.assertEquals(assertPC, marketInfoDao.get(entity.getDate()).getLargeTradersPutCallRatio());
+        Assert.assertEquals(assertPC, marketInfoDao.getMarketInfoByDate(entity.getDate()).getLargeTradersPutCallRatio());
 
     }
 
@@ -74,17 +74,16 @@ public class MarketInfoDaoTest {
 
         LocalDate now = OffsetDateTime.now().toLocalDate();
 
-        MarketInfoEntity entity = marketInfoDao.get(now);
+        MarketInfoEntity entity = marketInfoDao.getMarketInfoByDate(now);
 
         if (entity == null) {
             entity = new MarketInfoEntity();
             entity.setDate(now);
             marketInfoDao.create(entity);
-            entity = marketInfoDao.get(now);
+            entity = marketInfoDao.getMarketInfoByDate(now);
         }
 
-        marketInfoDao.delete(entity.getDate());
-
+        marketInfoDao.deleteMarketInfoByDate(entity.getDate());
 
     }
 

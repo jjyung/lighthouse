@@ -23,24 +23,24 @@ public class MarketInfoDao {
         sessionFactory.getCurrentSession().save(entity);
     }
 
-    public MarketInfoEntity get(LocalDate date) {
+    public MarketInfoEntity getMarketInfoByDate(LocalDate date) {
         return (MarketInfoEntity) sessionFactory.getCurrentSession().createQuery("from MarketInfoEntity " +
                 " where date = :date")
                 .setParameter("date", date)
                 .uniqueResult();
     }
 
-    public void update(MarketInfoEntity entity) {
+    public void updateMarketInfo(MarketInfoEntity entity) {
         sessionFactory.getCurrentSession().update(entity);
     }
 
-    public void delete(long sn) {
+    public void deleteMarkeyInfoBySn(long sn) {
         sessionFactory.getCurrentSession().createQuery("delete from MarketInfoEntity where sn = :sn")
                 .setParameter("sn", sn)
                 .executeUpdate();
     }
 
-    public void delete(LocalDate date) {
+    public void deleteMarketInfoByDate(LocalDate date) {
         sessionFactory.getCurrentSession().createQuery("delete from MarketInfoEntity where date = :date")
                 .setParameter("date", date)
                 .executeUpdate();

@@ -18,91 +18,95 @@ import java.util.Objects;
 
 public class FutureExchange {
 
-	private static String getHtmlFile(String filename) throws Exception {
-		ClassLoader classLoader = FutureExchange.class.getClassLoader();
-		File file = new File(Objects.requireNonNull(classLoader.getResource(filename)).getFile());
-		return new String(Files.readAllBytes(file.toPath()));
-	}
+    private static String getHtmlFile(String filename) throws Exception {
+        ClassLoader classLoader = FutureExchange.class.getClassLoader();
+        File file = new File(Objects.requireNonNull(classLoader.getResource(filename)).getFile());
+        return new String(Files.readAllBytes(file.toPath()));
+    }
 
-	private static Document getOfflineDoc(String filename) throws Exception {
-		return Jsoup.parse(getHtmlFile(filename));
-	}
+    private static Document getOfflineDoc(String filename) throws Exception {
+        return Jsoup.parse(getHtmlFile(filename));
+    }
 
-	// TODO check date
-	// 外資淨多單
-	public static String getFININetAmount() throws Exception {
+    // TODO check date
+    // 外資淨多單
+    public static Long getFININetAmount() throws Exception {
 
-		Util.setSSL();
+        Util.setSSL();
 
-		Document doc = Jsoup.connect("http://www.taifex.com.tw/cht/3/futContractsDate")
-				.timeout(30000)
-				.userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36")
-				.get();
+        Document doc = Jsoup.connect("http://www.taifex.com.tw/cht/3/futContractsDate")
+                .timeout(30000)
+                .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36")
+                .get();
 
-		Element table = JsoupUtil.selectFirstRecursively(doc, ".table_f");
+        Element table = JsoupUtil.selectFirstRecursively(doc, ".table_f");
 
-		if (table == null) {
-			throw new RuntimeException("不符期待的 HTML 內容，網頁格式可能有變動。");
-		}
+        if (table == null) {
+            throw new RuntimeException("不符期待的 HTML 內容，網頁格式可能有變動。");
+        }
 
-		Elements trs = table.selectFirst("tbody").select("tr");
-		// 外資
-		Element tr = trs.get(5);
-		// 多空淨額
-		Element net = ((Element) tr.childNodes().get(23)).selectFirst("font");
-		return ((TextNode) net.childNode(0)).getWholeText().trim().replace(",", "");
-	}
+        Elements trs = table.selectFirst("tbody").select("tr");
+        // 外資
+        Element tr = trs.get(5);
+        // 多空淨額
+        Element net = ((Element) tr.childNodes().get(23)).selectFirst("font");
 
-	// TODO check date
-	// put/call ratio
-	public static String getPutCallRatio() throws Exception {
+        String netString = ((TextNode) net.childNode(0)).getWholeText().trim().replace(",", "");
 
-		Util.setSSL();
+        return ConvertUtil.toLong(netString);
+    }
 
-		Document doc = Jsoup.connect("https://www.taifex.com.tw/cht/3/largeTraderOptQry")
-				.timeout(30000)
-				.userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36")
-				.get();
+    // TODO check date
+    // put/call ratio
+    public static Double getPutCallRatio() throws Exception {
 
-		Element table = JsoupUtil.selectFirstRecursively(doc, ".table_f");
+        Util.setSSL();
 
-		if (table == null) {
-			throw new RuntimeException("不符期待的 HTML 內容，網頁格式可能有變動。");
-		}
+        Document doc = Jsoup.connect("https://www.taifex.com.tw/cht/3/largeTraderOptQry")
+                .timeout(30000)
+                .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36")
+                .get();
 
-		Elements trs = table.selectFirst("tbody").select("tr");
+        Element table = JsoupUtil.selectFirstRecursively(doc, ".table_f");
 
-		// 買權
-		Element mCallTr = trs.get(4);
-		String callValStr = ((TextNode) mCallTr.select("td").get(9).selectFirst("div").childNode(0)).getWholeText().trim().replace(",", "");
-		Long call = ConvertUtil.toLong(callValStr);
+        if (table == null) {
+            throw new RuntimeException("不符期待的 HTML 內容，網頁格式可能有變動。");
+        }
 
-		// 賣權
-		Element mPutTr = trs.get(7);
-		String putValStr = ((TextNode) mPutTr.select("td").get(9).selectFirst("div").childNode(0)).getWholeText().trim().replace(",", "");
-		Long put = ConvertUtil.toLong(putValStr);
+        Elements trs = table.selectFirst("tbody").select("tr");
 
-		// 小數點第二位
-		DecimalFormat df = new DecimalFormat("##.00");
+        // 買權
+        Element mCallTr = trs.get(4);
+        String callValStr = ((TextNode) mCallTr.select("td").get(9).selectFirst("div").childNode(0)).getWholeText().trim().replace(",", "");
+        Long call = ConvertUtil.toLong(callValStr);
 
-		return ConvertUtil.toString(df.format(put * 1.0 / call * 1.0));
-	}
+        // 賣權
+        Element mPutTr = trs.get(7);
+        String putValStr = ((TextNode) mPutTr.select("td").get(9).selectFirst("div").childNode(0)).getWholeText().trim().replace(",", "");
+        Long put = ConvertUtil.toLong(putValStr);
 
-	public static void main(String[] args) throws Exception {
+        if (put == null || put == 0 || call == null || call == 0) {
+            return 0.0;
+        }
 
-		OffsetDateTime now = OffsetDateTime.now();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd");
+        return put * 1.0 / call * 1.0;
+    }
 
-		// 小數點第二位
-		DecimalFormat df = new DecimalFormat("##.00");
+    public static void main(String[] args) throws Exception {
 
-		Long netBuy = ConvertUtil.toLong(TWSE.getFININetBuyAmount());
+        OffsetDateTime now = OffsetDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd");
 
-		String sellBuy = netBuy > 0 ? "買" : "賣";
+        // 小數點第二位
+        DecimalFormat df = new DecimalFormat("##.00");
 
-		String FININetBuyAmount = df.format(Math.abs(netBuy) / 100000000.0);
+        Long netBuy = ConvertUtil.toLong(TWSE.getFININetBuyAmount());
 
-		System.out.println(String.format("%s 外資大台淨多單 %s 口，p/c %s，外資現貨%s超 %s 億。",
-				formatter.format(now), getFININetAmount(), getPutCallRatio(), sellBuy, FININetBuyAmount));
-	}
+        String sellBuy = netBuy > 0 ? "買" : "賣";
+
+        String FININetBuyAmount = df.format(Math.abs(netBuy) / 100000000.0);
+
+        System.out.println(String.format("%s 外資大台淨多單 %s 口，p/c %s，外資現貨%s超 %s 億。",
+                formatter.format(now), getFININetAmount(), getPutCallRatio(), sellBuy, FININetBuyAmount));
+    }
 }
