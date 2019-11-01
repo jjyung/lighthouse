@@ -1,4 +1,4 @@
-package tw.kgips.dto.hello_world;
+package tw.kgips.dto.market_info;
 
 import tw.kgips.persistence.entity.MarketInfoEntity;
 

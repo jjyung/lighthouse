@@ -2,7 +2,7 @@ package tw.kgips.manager;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import tw.kgips.dto.hello_world.MarketInfoDTO;
+import tw.kgips.dto.market_info.MarketInfoDTO;
 import tw.kgips.persistence.dao.MarketInfoDao;
 import tw.kgips.persistence.entity.MarketInfoEntity;
 import tw.kgips.sandbox.FutureExchange;
