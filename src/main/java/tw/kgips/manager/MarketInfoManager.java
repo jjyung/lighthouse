@@ -62,7 +62,7 @@ public class MarketInfoManager {
         String sellBuy = stockNetBuy > 0 ? "買" : "賣";
         String FININetBuyAmount = df.format(Math.abs(stockNetBuy) / 100000000.0);
         System.out.println(String.format("%s 外資大台淨多單 %s 口，p/c %s，外資現貨%s超 %s 億。",
-                formatter.format(now), finiFutureNetAmount, putCallRatio, sellBuy, FININetBuyAmount));
+                    formatter.format(now), finiFutureNetAmount, df.format(putCallRatio), sellBuy, FININetBuyAmount));
 
     }
 

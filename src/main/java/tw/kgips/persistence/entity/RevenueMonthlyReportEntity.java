@@ -3,10 +3,10 @@ package tw.kgips.persistence.entity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "monthly_report", uniqueConstraints = {
+@Table(name = "revenue_monthly_report", uniqueConstraints = {
         @UniqueConstraint(name = "monthly_report_uk", columnNames = {"company_code", "year", "month"})
 })
-public class MonthlyReportEntity {
+public class RevenueMonthlyReportEntity {
 
     @Id
     @Column(name = "sn")
