@@ -38,7 +38,7 @@ public class MarketInfoManager {
         if (marketInfoEntity == null) {
             marketInfoEntity = new MarketInfoEntity();
             marketInfoEntity.setDate(now.toLocalDate());
-            marketInfoDao.create(marketInfoEntity);
+            marketInfoDao.createMarketInfo(marketInfoEntity);
         }
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd");

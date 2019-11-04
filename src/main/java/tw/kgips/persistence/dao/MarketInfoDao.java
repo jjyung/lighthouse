@@ -19,7 +19,7 @@ public class MarketInfoDao {
         this.sessionFactory = sessionFactory;
     }
 
-    public void create(MarketInfoEntity entity) {
+    public void createMarketInfo(MarketInfoEntity entity) {
         sessionFactory.getCurrentSession().save(entity);
     }
 

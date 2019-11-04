@@ -23,7 +23,7 @@ public class MarketInfoDaoTest {
     public void testCreate() {
         MarketInfoEntity entity = new MarketInfoEntity();
         entity.setDate(OffsetDateTime.now().toLocalDate());
-        marketInfoDao.create(entity);
+        marketInfoDao.createMarketInfo(entity);
     }
 
     @Test
@@ -81,7 +81,7 @@ public class MarketInfoDaoTest {
         if (entity == null) {
             entity = new MarketInfoEntity();
             entity.setDate(now);
-            marketInfoDao.create(entity);
+            marketInfoDao.createMarketInfo(entity);
             entity = marketInfoDao.getMarketInfoByDate(now);
         }
 
