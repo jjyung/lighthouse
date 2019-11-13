@@ -17,10 +17,10 @@ import java.time.format.DateTimeFormatter;
 @Component
 public class MarketInfoManager {
 
-    private MarketInfoDao marketInfoDao;
+    private final MarketInfoDao marketInfoDao;
 
     @Autowired
-    public void setMarketInfoDao(MarketInfoDao marketInfoDao) {
+    public MarketInfoManager(MarketInfoDao marketInfoDao) {
         this.marketInfoDao = marketInfoDao;
     }
 
@@ -62,7 +62,7 @@ public class MarketInfoManager {
         String sellBuy = stockNetBuy > 0 ? "買" : "賣";
         String FININetBuyAmount = df.format(Math.abs(stockNetBuy) / 100000000.0);
         System.out.println(String.format("%s 外資大台淨多單 %s 口，p/c %s，外資現貨%s超 %s 億。",
-                    formatter.format(now), finiFutureNetAmount, df.format(putCallRatio), sellBuy, FININetBuyAmount));
+                formatter.format(now), finiFutureNetAmount, df.format(putCallRatio), sellBuy, FININetBuyAmount));
 
     }
 
