@@ -5,8 +5,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import tw.kgips.dto.exchange_day_report.ExchangeDayReportCreateDTO;
 import tw.kgips.manager.ExchangeDayReportManager;
-import tw.kgips.persistence.entity.ExchangeDayReportEntity;
 
 import java.time.OffsetDateTime;
 
@@ -21,10 +21,10 @@ public class ExchangeDayReportManagerTest {
 
     @Test
     public void testCreateExchangeDayReport() {
-        ExchangeDayReportEntity entity = new ExchangeDayReportEntity();
-        entity.setCompanyCode(testCompanyCode);
-        entity.setDate(OffsetDateTime.now().toLocalDate());
-        exchangeDayReportManager.createExchangeDayReport(entity);
+        ExchangeDayReportCreateDTO dto = new ExchangeDayReportCreateDTO();
+        dto.setCompanyCode(testCompanyCode);
+        dto.setDate(OffsetDateTime.now().toLocalDate());
+        exchangeDayReportManager.createExchangeDayReport(dto);
     }
 
     @Test
