@@ -33,6 +33,20 @@ public class ExchangeDayReportDaoTest {
     }
 
     @Test
+    public void testIsExchangeDayReportExist() {
+
+        LocalDate date = LocalDate.now();
+
+        ExchangeDayReportEntity entity = exchangeDayReportDao.getExchangeDayReport(testCompanyCode, date);
+
+        if (entity == null) {
+            testCreateExchangeDayReport();
+        }
+
+        Assert.assertTrue(exchangeDayReportDao.isExchangeDayReportExist(testCompanyCode, date));
+    }
+
+    @Test
     public void testGetExchangeDayReport() {
 
         LocalDate date = LocalDate.now();

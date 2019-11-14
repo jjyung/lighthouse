@@ -1,46 +1,31 @@
-package tw.kgips.persistence.entity;
+package tw.kgips.dto.exchange_day_report;
 
-import javax.persistence.*;
+import tw.kgips.persistence.entity.ExchangeDayReportEntity;
+
 import java.time.LocalDate;
 
-@Entity
-@Table(name = "exchange_day_report",
-        uniqueConstraints = @UniqueConstraint(name = "exchange_day_report_uk", columnNames = {"company_code", "date"}))
-public class ExchangeDayReportEntity {
+public class ExchangeDayReportDTO {
 
-    @Id
-    @Column(name = "sn")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long sn;
 
-    @Column(name = "company_code", length = 15)
     private String companyCode; // 股票代碼
 
-    @Column(name = "date")
     private LocalDate date; // 日期
 
-    @Column(name = "traded_shares_number")
     private Long tradedSharesNumber; // 成交股數
 
-    @Column(name = "tx_amount")
     private Long txAmount; // 成交金額
 
-    @Column(name = "opening_price")
     private Double openingPrice; // 開盤價
 
-    @Column(name = "highest_price")
     private Double highestPrice; // 最高價
 
-    @Column(name = "lowest_price")
     private Double lowestPrice; // 最低價
 
-    @Column(name = "closing_price")
     private Double closingPrice; // 收盤價
 
-    @Column(name = "change_spread")
     private Double changeSpread; // 漲跌價差
 
-    @Column(name = "tx_number")
     private Long txNumber; // 成交筆數
 
     public Long getSn() {
@@ -71,8 +56,8 @@ public class ExchangeDayReportEntity {
         return tradedSharesNumber;
     }
 
-    public void setTradedSharesNumber(Long tradedSharesMumber) {
-        this.tradedSharesNumber = tradedSharesMumber;
+    public void setTradedSharesNumber(Long tradedSharesNumber) {
+        this.tradedSharesNumber = tradedSharesNumber;
     }
 
     public Long getTxAmount() {
@@ -111,8 +96,8 @@ public class ExchangeDayReportEntity {
         return closingPrice;
     }
 
-    public void setClosingPrice(Double closeingPrice) {
-        this.closingPrice = closeingPrice;
+    public void setClosingPrice(Double closingPrice) {
+        this.closingPrice = closingPrice;
     }
 
     public Double getChangeSpread() {
@@ -130,4 +115,23 @@ public class ExchangeDayReportEntity {
     public void setTxNumber(Long txNumber) {
         this.txNumber = txNumber;
     }
+
+    public ExchangeDayReportDTO fromEntity(ExchangeDayReportEntity entity) {
+        ExchangeDayReportDTO dto = new ExchangeDayReportDTO();
+
+        dto.setSn(entity.getSn());
+        dto.setCompanyCode(entity.getCompanyCode());
+        dto.setDate(entity.getDate());
+        dto.setTradedSharesNumber(entity.getTradedSharesNumber());
+        dto.setTxAmount(entity.getTxAmount());
+        dto.setOpeningPrice(entity.getOpeningPrice());
+        dto.setHighestPrice(entity.getHighestPrice());
+        dto.setLowestPrice(entity.getLowestPrice());
+        dto.setClosingPrice(entity.getClosingPrice());
+        dto.setChangeSpread(entity.getChangeSpread());
+        dto.setTxNumber(entity.getTxNumber());
+
+        return dto;
+    }
+
 }

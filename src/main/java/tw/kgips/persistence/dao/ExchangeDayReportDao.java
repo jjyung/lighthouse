@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import tw.kgips.dto.DateRangeDTO;
 import tw.kgips.persistence.entity.ExchangeDayReportEntity;
+import tw.kgips.util.ConvertUtil;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
@@ -24,6 +25,16 @@ public class ExchangeDayReportDao {
 
     public void createExchangeDayReport(ExchangeDayReportEntity entity) {
         sessionFactory.getCurrentSession().save(entity);
+    }
+
+    public boolean isExchangeDayReportExist(String companyCode, LocalDate date) {
+        return ConvertUtil.toInt(sessionFactory.getCurrentSession()
+                .createQuery("select count(*) " +
+                        " from ExchangeDayReportEntity " +
+                        " where companyCode = :companyCode and date = :date")
+                .setParameter("companyCode", companyCode)
+                .setParameter("date", date)
+                .uniqueResult()) > 0;
     }
 
     public ExchangeDayReportEntity getExchangeDayReport(String companyCode, LocalDate date) {
