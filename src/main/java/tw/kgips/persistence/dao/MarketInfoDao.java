@@ -12,38 +12,38 @@ import java.time.LocalDate;
 @Transactional
 public class MarketInfoDao {
 
-    private SessionFactory sessionFactory;
+	private SessionFactory sessionFactory;
 
-    @Autowired
-    public void setSessionFactory(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
+	@Autowired
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
+	}
 
-    public void createMarketInfo(MarketInfoEntity entity) {
-        sessionFactory.getCurrentSession().save(entity);
-    }
+	public void createMarketInfo(MarketInfoEntity entity) {
+		sessionFactory.getCurrentSession().save(entity);
+	}
 
-    public MarketInfoEntity getMarketInfoByDate(LocalDate date) {
-        return (MarketInfoEntity) sessionFactory.getCurrentSession().createQuery("from MarketInfoEntity " +
-                " where date = :date")
-                .setParameter("date", date)
-                .uniqueResult();
-    }
+	public MarketInfoEntity getMarketInfoByDate(LocalDate date) {
+		return sessionFactory.getCurrentSession().createQuery("from MarketInfoEntity " +
+				" where date = :date", MarketInfoEntity.class)
+				.setParameter("date", date)
+				.uniqueResult();
+	}
 
-    public void updateMarketInfo(MarketInfoEntity entity) {
-        sessionFactory.getCurrentSession().update(entity);
-    }
+	public void updateMarketInfo(MarketInfoEntity entity) {
+		sessionFactory.getCurrentSession().update(entity);
+	}
 
-    public void deleteMarkeyInfoBySn(long sn) {
-        sessionFactory.getCurrentSession().createQuery("delete from MarketInfoEntity where sn = :sn")
-                .setParameter("sn", sn)
-                .executeUpdate();
-    }
+	public void deleteMarkeyInfoBySn(long sn) {
+		sessionFactory.getCurrentSession().createQuery("delete from MarketInfoEntity where sn = :sn")
+				.setParameter("sn", sn)
+				.executeUpdate();
+	}
 
-    public void deleteMarketInfoByDate(LocalDate date) {
-        sessionFactory.getCurrentSession().createQuery("delete from MarketInfoEntity where date = :date")
-                .setParameter("date", date)
-                .executeUpdate();
-    }
+	public void deleteMarketInfoByDate(LocalDate date) {
+		sessionFactory.getCurrentSession().createQuery("delete from MarketInfoEntity where date = :date")
+				.setParameter("date", date)
+				.executeUpdate();
+	}
 
 }

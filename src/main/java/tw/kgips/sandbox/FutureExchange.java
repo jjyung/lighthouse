@@ -107,6 +107,6 @@ public class FutureExchange {
         String FININetBuyAmount = df.format(Math.abs(netBuy) / 100000000.0);
 
         System.out.println(String.format("%s 外資大台淨多單 %s 口，p/c %s，外資現貨%s超 %s 億。",
-                formatter.format(now), getFININetAmount(), getPutCallRatio(), sellBuy, FININetBuyAmount));
+                formatter.format(now), getFININetAmount(), df.format(getPutCallRatio()), sellBuy, FININetBuyAmount));
     }
 }
