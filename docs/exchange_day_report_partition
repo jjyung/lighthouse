@@ -8,7 +8,7 @@ DECLARE
         end_of_next_year TEXT;
 BEGIN
         partition_date := to_char(NEW.date, 'YYYY');
-        partition_name := 'eachange_day_report_' || partition_date;
+        partition_name := 'exchange_day_report_' || partition_date;
         start_of_year := to_char((NEW.date), 'YYYY') || '-01-01';
         end_of_next_year := to_char((NEW.date + interval '1 year'), 'YYYY') || '-01-01';
 IF NOT EXISTS
