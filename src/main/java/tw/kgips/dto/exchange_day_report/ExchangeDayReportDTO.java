@@ -116,7 +116,7 @@ public class ExchangeDayReportDTO {
         this.txNumber = txNumber;
     }
 
-    public ExchangeDayReportDTO fromEntity(ExchangeDayReportEntity entity) {
+    public static ExchangeDayReportDTO fromEntity(ExchangeDayReportEntity entity) {
         ExchangeDayReportDTO dto = new ExchangeDayReportDTO();
 
         dto.setSn(entity.getSn());

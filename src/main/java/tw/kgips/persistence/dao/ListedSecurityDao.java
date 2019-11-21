@@ -28,7 +28,7 @@ public class ListedSecurityDao {
 
 	public List<ListedSecurityEntity> listListedSecuritiesByMarketCat(String marketCat) {
 		return sessionFactory.getCurrentSession().createQuery("from ListedSecurityEntity " +
-				" where marketCat is null or marketCat = :marketCat " +
+				" where :marketCat is null or marketCat = :marketCat " +
 				" order by companyCode asc ", ListedSecurityEntity.class)
 				.setParameter("marketCat", marketCat)
 				.list();
