@@ -214,7 +214,7 @@ public class ExchangeDayReportManager {
 				} catch (Exception ex) {
 					logger.error(ex.getMessage(), ex);
 					errorCount++;
-					// 失敗了，等三分鐘再繼續
+					// 失敗了, 等三分鐘再繼續
 					Thread.sleep(3 * 60 * 1000);
 				}
 			} while (!success && errorCount < 3); // 失敗再重新嘗試, 至多嘗試三次
