@@ -62,6 +62,13 @@ public class ExchangeDayReportDaoTest {
     }
 
     @Test
+    public void testGetAvgPriceOf() {
+        System.out.println(exchangeDayReportDao.getAvgPriceOf(testCompanyCode, LocalDate.now(), 20));
+        System.out.println(exchangeDayReportDao.getAvgPriceOf(testCompanyCode, LocalDate.now(), 60));
+        System.out.println(exchangeDayReportDao.getAvgPriceOf(testCompanyCode, LocalDate.now(), 120));
+    }
+
+    @Test
     public void testList() {
 
         DateRangeDTO dateRangeDTO = new DateRangeDTO(LocalDate.now(), true, LocalDate.now().plusDays(1L), false);

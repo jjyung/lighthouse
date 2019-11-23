@@ -46,6 +46,23 @@ public class ExchangeDayReportDao {
                 .uniqueResult();
     }
 
+    public Double getAvgPriceOf(String companyCode, LocalDate date, int days) {
+        return ConvertUtil.toDouble(sessionFactory.getCurrentSession()
+                .createNativeQuery("select avg(highest_price) " +
+                        " from ( " +
+                        " select * " +
+                        " from exchange_day_report " +
+                        " where company_code = :companyCode " +
+                        " and date <= :date" +
+                        " order by date desc " +
+                        " limit :days " +
+                        ") as recent_k")
+                .setParameter("companyCode", companyCode)
+                .setParameter("date", date)
+                .setParameter("days", days)
+                .uniqueResult());
+    }
+
     public List<ExchangeDayReportEntity> listExchangeDayReportByCompanyCodeAndDateRange(String companyCode, DateRangeDTO dateRangeDTO) {
 
         String queryString = "from ExchangeDayReportEntity " +
