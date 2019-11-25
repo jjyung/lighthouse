@@ -16,6 +16,27 @@ public class StatisticReportEntity {
     @Column(name = "date")
     private LocalDate date;
 
+    @Column(name = "max_price_5")
+    private Double maxPrice5;
+
+    @Column(name = "max_price_10")
+    private Double maxPrice10;
+
+    @Column(name = "max_price_20")
+    private Double maxPrice20;
+
+    @Column(name = "max_price_60")
+    private Double maxPrice60;
+
+    @Column(name = "max_price_120")
+    private Double maxPrice120;
+
+    @Column(name = "max_price_200")
+    private Double maxPrice200;
+
+    @Column(name = "max_price_240")
+    private Double maxPrice240;
+
     @Column(name = "avg_price_5")
     private Double avgPrice5;
 
@@ -72,6 +93,62 @@ public class StatisticReportEntity {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public Double getMaxPrice5() {
+        return maxPrice5;
+    }
+
+    public void setMaxPrice5(Double maxPrice5) {
+        this.maxPrice5 = maxPrice5;
+    }
+
+    public Double getMaxPrice10() {
+        return maxPrice10;
+    }
+
+    public void setMaxPrice10(Double maxPrice10) {
+        this.maxPrice10 = maxPrice10;
+    }
+
+    public Double getMaxPrice20() {
+        return maxPrice20;
+    }
+
+    public void setMaxPrice20(Double maxPrice20) {
+        this.maxPrice20 = maxPrice20;
+    }
+
+    public Double getMaxPrice60() {
+        return maxPrice60;
+    }
+
+    public void setMaxPrice60(Double maxPrice60) {
+        this.maxPrice60 = maxPrice60;
+    }
+
+    public Double getMaxPrice120() {
+        return maxPrice120;
+    }
+
+    public void setMaxPrice120(Double maxPrice120) {
+        this.maxPrice120 = maxPrice120;
+    }
+
+    public Double getMaxPrice200() {
+        return maxPrice200;
+    }
+
+    public void setMaxPrice200(Double maxPrice200) {
+        this.maxPrice200 = maxPrice200;
+    }
+
+    public Double getMaxPrice240() {
+        return maxPrice240;
+    }
+
+    public void setMaxPrice240(Double maxPrice240) {
+        this.maxPrice240 = maxPrice240;
     }
 
     public Double getAvgPrice5() {

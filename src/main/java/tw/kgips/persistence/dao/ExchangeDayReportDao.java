@@ -46,9 +46,53 @@ public class ExchangeDayReportDao {
                 .uniqueResult();
     }
 
+    public ExchangeDayReportEntity getLastExchangeDayReport(String companyCode) {
+        return (ExchangeDayReportEntity) sessionFactory.getCurrentSession()
+                .createQuery("from ExchangeDayReportEntity " +
+                        " where companyCode = :companyCode " +
+                        " order by date desc")
+                .setParameter("companyCode", companyCode)
+                .setMaxResults(1)
+                .uniqueResult();
+    }
+
+    public Double getMaxPriceOf(String companyCode, LocalDate date, int days) {
+        return ConvertUtil.toDouble(sessionFactory.getCurrentSession()
+                .createNativeQuery("select max(highest_price) " +
+                        " from ( " +
+                        " select * " +
+                        " from exchange_day_report " +
+                        " where company_code = :companyCode " +
+                        " and date <= :date" +
+                        " order by date desc " +
+                        " limit :days " +
+                        ") as recent_k")
+                .setParameter("companyCode", companyCode)
+                .setParameter("date", date)
+                .setParameter("days", days)
+                .uniqueResult());
+    }
+
     public Double getAvgPriceOf(String companyCode, LocalDate date, int days) {
         return ConvertUtil.toDouble(sessionFactory.getCurrentSession()
-                .createNativeQuery("select avg(highest_price) " +
+                .createNativeQuery("select avg(closing_price) " +
+                        " from ( " +
+                        " select * " +
+                        " from exchange_day_report " +
+                        " where company_code = :companyCode " +
+                        " and date <= :date" +
+                        " order by date desc " +
+                        " limit :days " +
+                        ") as recent_k")
+                .setParameter("companyCode", companyCode)
+                .setParameter("date", date)
+                .setParameter("days", days)
+                .uniqueResult());
+    }
+
+    public Long getAvgTxNumOf(String companyCode, LocalDate date, int days) {
+        return ConvertUtil.toLong(sessionFactory.getCurrentSession()
+                .createNativeQuery("select round(avg(tx_number)) " +
                         " from ( " +
                         " select * " +
                         " from exchange_day_report " +
