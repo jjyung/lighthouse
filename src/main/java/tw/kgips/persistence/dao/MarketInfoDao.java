@@ -24,7 +24,8 @@ public class MarketInfoDao {
 	}
 
 	public MarketInfoEntity getMarketInfoByDate(LocalDate date) {
-		return sessionFactory.getCurrentSession().createQuery("from MarketInfoEntity " +
+		return sessionFactory.getCurrentSession().createQuery("select MarketInfoEntity " +
+				" from MarketInfoEntity " +
 				" where date = :date", MarketInfoEntity.class)
 				.setParameter("date", date)
 				.uniqueResult();
@@ -34,7 +35,7 @@ public class MarketInfoDao {
 		sessionFactory.getCurrentSession().update(entity);
 	}
 
-	public void deleteMarkeyInfoBySn(long sn) {
+	public void deleteMarketInfoBySn(long sn) {
 		sessionFactory.getCurrentSession().createQuery("delete from MarketInfoEntity where sn = :sn")
 				.setParameter("sn", sn)
 				.executeUpdate();
