@@ -28,13 +28,13 @@ $$
 LANGUAGE plpgsql;
 
 CREATE TRIGGER insert_exchange_day_report_trigger
-    BEFORE INSERT ON public.exchange_day_report
-    FOR EACH ROW EXECUTE PROCEDURE public.exchange_day_report_insert_function();
+BEFORE INSERT ON public.exchange_day_report
+FOR EACH ROW EXECUTE PROCEDURE public.exchange_day_report_insert_function();
 
 CREATE OR REPLACE FUNCTION partitions_master_table_cleanup_trigger()
 RETURNS trigger AS
 $BODY$BEGIN
-delete from only public.exchange_day_report;
+DELETE FROM ONLY public.exchange_day_report;
 RETURN NULL;
 END;$BODY$
 LANGUAGE plpgsql VOLATILE
