@@ -2,6 +2,7 @@ package tw.kgips.manager;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import tw.kgips.dto.listed_security.ListedSecurityDTO;
 import tw.kgips.dto.listed_security.MarketCat;
 import tw.kgips.persistence.dao.ExchangeDayReportDao;
@@ -44,7 +45,8 @@ public class StatisticReportManager {
         return statisticReportDao.isStatisticReportExist(companyCode, date);
     }
 
-    private StatisticReportEntity calculateStatistic(String companyCode, LocalDate date) {
+    @Transactional
+    public StatisticReportEntity calculateStatistic(String companyCode, LocalDate date) {
 
         StatisticReportEntity entity = new StatisticReportEntity();
 
@@ -57,6 +59,13 @@ public class StatisticReportManager {
         entity.setMaxPrice120(exchangeDayReportDao.getMaxPriceOf(companyCode, date, 120));
         entity.setMaxPrice200(exchangeDayReportDao.getMaxPriceOf(companyCode, date, 200));
         entity.setMaxPrice240(exchangeDayReportDao.getMaxPriceOf(companyCode, date, 240));
+        entity.setMinPrice5(exchangeDayReportDao.getMinPriceOf(companyCode, date, 5));
+        entity.setMinPrice10(exchangeDayReportDao.getMinPriceOf(companyCode, date, 10));
+        entity.setMinPrice20(exchangeDayReportDao.getMinPriceOf(companyCode, date, 20));
+        entity.setMinPrice60(exchangeDayReportDao.getMinPriceOf(companyCode, date, 60));
+        entity.setMinPrice120(exchangeDayReportDao.getMinPriceOf(companyCode, date, 120));
+        entity.setMinPrice200(exchangeDayReportDao.getMinPriceOf(companyCode, date, 200));
+        entity.setMinPrice240(exchangeDayReportDao.getMinPriceOf(companyCode, date, 240));
         entity.setAvgPrice5(exchangeDayReportDao.getAvgPriceOf(companyCode, date, 5));
         entity.setAvgPrice10(exchangeDayReportDao.getAvgPriceOf(companyCode, date, 10));
         entity.setAvgPrice20(exchangeDayReportDao.getAvgPriceOf(companyCode, date, 20));

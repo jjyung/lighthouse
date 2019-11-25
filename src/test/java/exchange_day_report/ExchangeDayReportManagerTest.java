@@ -51,9 +51,7 @@ public class ExchangeDayReportManagerTest {
 	@Test
 	public void testCrawlAllAndCreateByMarketCat() throws InterruptedException {
 
-		for (int month = 7; month < 11; month++) {
-			exchangeDayReportManager.crawlAllAndCreateForSII(2019, month);
-		}
+		exchangeDayReportManager.crawlAllAndCreateForSII(2019, 11);
 
 	}
 
