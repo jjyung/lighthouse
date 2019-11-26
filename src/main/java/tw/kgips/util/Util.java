@@ -44,7 +44,7 @@ public class Util {
 	}
 
 	public static void setSSL() {
-		String certFileName = "taifex.twse.com.tw.jks";
+		String certFileName = "tpex.taifex.twse.com.tw.jks";
 		ClassLoader classLoader = FutureExchange.class.getClassLoader();
 		System.setProperty("javax.net.ssl.trustStore", Objects.requireNonNull(classLoader.getResource(certFileName)).getPath());
 	}
