@@ -10,6 +10,10 @@ import java.time.LocalDate;
 public class StatisticReportEntity {
 
 	@Id
+	@Column(name = "sn")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long sn;
+
 	@Column(name = "company_code")
 	private String companyCode;
 
@@ -99,6 +103,14 @@ public class StatisticReportEntity {
 
 	@Column(name = "avg_tx_num_240")
 	private Long avgTxNum240;
+
+	public Long getSn() {
+		return sn;
+	}
+
+	public void setSn(Long sn) {
+		this.sn = sn;
+	}
 
 	public String getCompanyCode() {
 		return companyCode;
