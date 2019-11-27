@@ -30,14 +30,18 @@ import java.util.stream.Collectors;
 public class ExchangeDayReportManager {
 
 	private static final Logger logger = Logger.getLogger(ExchangeDayReportManager.class);
-	private final static String EXCHANGE_REPORT_STOCK_DAY_URL = "https://www.twse.com.tw/exchangeReport/STOCK_DAY";
+	private final static String SII_EXCHANGE_REPORT_STOCK_DAY_URL = "https://www.twse.com.tw/exchangeReport/STOCK_DAY";
+	private final static String OTC_DAILY_TRADING_INFO_URL = "https://www.tpex.org.tw/web/stock/aftertrading/daily_trading_info/st43_result.php";
 
 	private final ExchangeDayReportDao exchangeDayReportDao;
 
 	private ListedSecurityManager listedSecurityManager;
 
-	private static final Object lastQueryStockExchangeDayReportTimestampKey = new Object();
-	private static long lastQueryStockExchangeDayReportTimestamp = 0L;
+	private static final Object lastQuerySIITimestampKey = new Object();
+	private static long lastQuerySIITimestamp = 0L;
+
+	private static final Object lastQueryOTCTimestampKey = new Object();
+	private static long lastQueryOTCTimestamp = 0L;
 
 	@Autowired
 	public ExchangeDayReportManager(ExchangeDayReportDao exchangeDayReportDao) {
@@ -49,16 +53,15 @@ public class ExchangeDayReportManager {
 		this.listedSecurityManager = listedSecurityManager;
 	}
 
-	// TODO OTC
 	public static String querySIIStockExchangeDayReport(String companyCode, LocalDate date) throws IOException, InterruptedException {
 
 		// 每次間隔至少 3 秒, 避免被鎖 IP
-		while (System.currentTimeMillis() - lastQueryStockExchangeDayReportTimestamp < 5000) {
+		while (System.currentTimeMillis() - lastQuerySIITimestamp < 5000) {
 			Thread.sleep(5000);
 		}
 
-		synchronized (lastQueryStockExchangeDayReportTimestampKey) {
-			lastQueryStockExchangeDayReportTimestamp = System.currentTimeMillis();
+		synchronized (lastQuerySIITimestampKey) {
+			lastQuerySIITimestamp = System.currentTimeMillis();
 		}
 
 		Util.setSSL();
@@ -71,7 +74,44 @@ public class ExchangeDayReportManager {
 		params.put("date", dateTimeFormatter.format(date));
 		params.put("_", ConvertUtil.toString(System.currentTimeMillis()));
 
-		return Jsoup.connect(EXCHANGE_REPORT_STOCK_DAY_URL)
+		return Jsoup.connect(SII_EXCHANGE_REPORT_STOCK_DAY_URL)
+				.timeout(30000)
+				.userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36")
+				.method(Connection.Method.GET)
+				.header("Accept", "application/json, text/javascript, */*; q=0.01")
+				.header("Accept-Encoding", "gzip, deflate, br")
+				.header("Accept-Language", "zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7")
+				.header("Content-Type", "application/json;charset=UTF-8")
+				.data(params)
+				.ignoreContentType(true)
+				.execute()
+				.body();
+	}
+
+	public static String queryOTCStockExchangeDayReport(String companyCode, LocalDate date) throws IOException, InterruptedException {
+
+		// 每次間隔至少 3 秒, 避免被鎖 IP
+		while (System.currentTimeMillis() - lastQueryOTCTimestamp < 5000) {
+			Thread.sleep(5000);
+		}
+
+		synchronized (lastQueryOTCTimestampKey) {
+			lastQueryOTCTimestamp = System.currentTimeMillis();
+		}
+
+		Util.setSSL();
+
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyy/MM");
+		Map<String, String> params = new HashMap<>();
+
+		// ex: l=zh-tw&d=108/11&stkno=1240&_=1574794914120
+
+		params.put("l", "zh-tw");
+		params.put("d", dateTimeFormatter.format(date.minusYears(1911))); // to 民國
+		params.put("stkno", companyCode);
+		params.put("_", ConvertUtil.toString(System.currentTimeMillis()));
+
+		return Jsoup.connect(OTC_DAILY_TRADING_INFO_URL)
 				.timeout(30000)
 				.userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36")
 				.method(Connection.Method.GET)
