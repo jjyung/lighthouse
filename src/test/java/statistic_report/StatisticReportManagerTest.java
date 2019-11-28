@@ -28,7 +28,7 @@ public class StatisticReportManagerTest {
 
     @Test
     public void testCreateAllLastStatisticReport() {
-        statisticReportManager.createAllLastStatisticReport();
+        statisticReportManager.createAllLastStatisticReport(5);
     }
 
 }

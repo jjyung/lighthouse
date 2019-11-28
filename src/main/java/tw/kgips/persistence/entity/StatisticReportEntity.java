@@ -104,6 +104,27 @@ public class StatisticReportEntity {
 	@Column(name = "avg_tx_num_240")
 	private Long avgTxNum240;
 
+	@Column(name = "avg_traded_shares_num_5")
+	private Long avgTradedSharesNum5;
+
+	@Column(name = "avg_traded_shares_num_10")
+	private Long avgTradedSharesNum10;
+
+	@Column(name = "avg_traded_shares_num_20")
+	private Long avgTradedSharesNum20;
+
+	@Column(name = "avg_traded_shares_num_60")
+	private Long avgTradedSharesNum60;
+
+	@Column(name = "avg_traded_shares_num_120")
+	private Long avgTradedSharesNum120;
+
+	@Column(name = "avg_traded_shares_num_200")
+	private Long avgTradedSharesNum200;
+
+	@Column(name = "avg_traded_shares_num_240")
+	private Long avgTradedSharesNum240;
+
 	public Long getSn() {
 		return sn;
 	}
@@ -350,5 +371,61 @@ public class StatisticReportEntity {
 
 	public void setAvgTxNum240(Long avgTxNum240) {
 		this.avgTxNum240 = avgTxNum240;
+	}
+
+	public Long getAvgTradedSharesNum5() {
+		return avgTradedSharesNum5;
+	}
+
+	public void setAvgTradedSharesNum5(Long avgTradedSharesNum5) {
+		this.avgTradedSharesNum5 = avgTradedSharesNum5;
+	}
+
+	public Long getAvgTradedSharesNum10() {
+		return avgTradedSharesNum10;
+	}
+
+	public void setAvgTradedSharesNum10(Long avgTradedSharesNum10) {
+		this.avgTradedSharesNum10 = avgTradedSharesNum10;
+	}
+
+	public Long getAvgTradedSharesNum20() {
+		return avgTradedSharesNum20;
+	}
+
+	public void setAvgTradedSharesNum20(Long avgTradedSharesNum20) {
+		this.avgTradedSharesNum20 = avgTradedSharesNum20;
+	}
+
+	public Long getAvgTradedSharesNum60() {
+		return avgTradedSharesNum60;
+	}
+
+	public void setAvgTradedSharesNum60(Long avgTradedSharesNum60) {
+		this.avgTradedSharesNum60 = avgTradedSharesNum60;
+	}
+
+	public Long getAvgTradedSharesNum120() {
+		return avgTradedSharesNum120;
+	}
+
+	public void setAvgTradedSharesNum120(Long avgTradedSharesNum120) {
+		this.avgTradedSharesNum120 = avgTradedSharesNum120;
+	}
+
+	public Long getAvgTradedSharesNum200() {
+		return avgTradedSharesNum200;
+	}
+
+	public void setAvgTradedSharesNum200(Long avgTradedSharesNum200) {
+		this.avgTradedSharesNum200 = avgTradedSharesNum200;
+	}
+
+	public Long getAvgTradedSharesNum240() {
+		return avgTradedSharesNum240;
+	}
+
+	public void setAvgTradedSharesNum240(Long avgTradedSharesNum240) {
+		this.avgTradedSharesNum240 = avgTradedSharesNum240;
 	}
 }

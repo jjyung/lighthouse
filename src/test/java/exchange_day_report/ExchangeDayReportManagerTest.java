@@ -36,7 +36,7 @@ public class ExchangeDayReportManagerTest {
 	@Test
 	public void testQueryStockExchangeDayReportAndCreate() throws IOException, InterruptedException {
 		String dayReportStr = querySIIStockExchangeDayReport(testCompanyCodeSII, LocalDate.now());
-		List<ExchangeDayReportCreateDTO> createDTOList = parseStockExchangeDayReport(dayReportStr);
+		List<ExchangeDayReportCreateDTO> createDTOList = parseSIIStockExchangeDayReport(dayReportStr);
 
 		assert createDTOList != null;
 		for (ExchangeDayReportCreateDTO createDTO : createDTOList) {
@@ -52,12 +52,20 @@ public class ExchangeDayReportManagerTest {
 	public void testQueryOTCStockExchangeDayReport() throws IOException, InterruptedException {
 		String dayReportStr = queryOTCStockExchangeDayReport(testCompanyCodeOTC, LocalDate.now());
 		System.out.println(dayReportStr);
+		List<ExchangeDayReportCreateDTO> createDTOList = parseOTCStockExchangeDayReport(dayReportStr);
 	}
 
 	@Test
-	public void testCrawlAllAndCreateByMarketCat() throws InterruptedException {
+	public void testCrawlSIIAllAndCreate() throws InterruptedException {
 
-		exchangeDayReportManager.crawlAllAndCreateForSII(2019, 11);
+		exchangeDayReportManager.crawlAllAndCreateForSII(2019, LocalDate.now().getMonth().getValue());
+
+	}
+
+	@Test
+	public void testCrawlOTCAllAndCreate() throws InterruptedException {
+
+		exchangeDayReportManager.crawlAllAndCreateForOTC(2019, LocalDate.now().getMonth().getValue());
 
 	}
 

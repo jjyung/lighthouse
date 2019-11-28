@@ -55,7 +55,7 @@ public class ExchangeDayReportManager {
 
 	public static String querySIIStockExchangeDayReport(String companyCode, LocalDate date) throws IOException, InterruptedException {
 
-		// 每次間隔至少 3 秒, 避免被鎖 IP
+		// 每次間隔至少 5 秒, 避免被鎖 IP
 		while (System.currentTimeMillis() - lastQuerySIITimestamp < 5000) {
 			Thread.sleep(5000);
 		}
@@ -90,7 +90,7 @@ public class ExchangeDayReportManager {
 
 	public static String queryOTCStockExchangeDayReport(String companyCode, LocalDate date) throws IOException, InterruptedException {
 
-		// 每次間隔至少 3 秒, 避免被鎖 IP
+		// 每次間隔至少 5 秒, 避免被鎖 IP
 		while (System.currentTimeMillis() - lastQueryOTCTimestamp < 5000) {
 			Thread.sleep(5000);
 		}
@@ -125,7 +125,7 @@ public class ExchangeDayReportManager {
 				.body();
 	}
 
-	public static List<ExchangeDayReportCreateDTO> parseStockExchangeDayReport(String queryResponseBody) {
+	public static List<ExchangeDayReportCreateDTO> parseSIIStockExchangeDayReport(String queryResponseBody) {
 
 		if (queryResponseBody == null) {
 			return null;
@@ -207,6 +207,86 @@ public class ExchangeDayReportManager {
 		return createDTOList;
 	}
 
+	public static List<ExchangeDayReportCreateDTO> parseOTCStockExchangeDayReport(String queryResponseBody) {
+
+		if (queryResponseBody == null) {
+			return null;
+		}
+
+		List<ExchangeDayReportCreateDTO> createDTOList = new ArrayList<>();
+
+		// eg "stkNo":"1240","stkName":"\u8302\u751f\u8fb2\u7d93","showListPriceNote":false,"showListPriceLink":false,"reportDate":"108\/11","iTotalRecords":18,"aaData":
+
+		try {
+			JSONObject jsonObject = new JSONObject(queryResponseBody);
+
+			String companyCode = ConvertUtil.toString(jsonObject.get("stkNo"));
+
+			// fields: 日期, 成交仟股, 成交仟元, 開盤, 最高, 最低, 收盤, 漲跌, 筆數
+			// data sample: data:[["108\/11\/01","49","2,532","51.40","52.00","51.40","51.60","-0.20","40"]]
+			JSONArray data = (JSONArray) jsonObject.get("aaData");
+
+			for (int i = 0; i < data.length(); i++) {
+
+				try {
+					ExchangeDayReportCreateDTO createDTO = new ExchangeDayReportCreateDTO();
+					createDTO.setCompanyCode(companyCode);
+
+					JSONArray row = (JSONArray) data.get(i);
+
+					String date = ConvertUtil.toString(row.get(0));
+
+					assert date != null;
+					String[] split = date.split("/");
+
+					LocalDate localDate = LocalDate.of(ConvertUtil.toInt(split[0]) + 1911, ConvertUtil.toInt(split[1]), ConvertUtil.toInt(split[2]));
+					createDTO.setDate(localDate);
+
+					String tradedSharesNum = ConvertUtil.toString(row.get(1));
+					assert tradedSharesNum != null;
+					tradedSharesNum = tradedSharesNum.replaceAll(",", "");
+					createDTO.setTradedSharesNumber(ConvertUtil.toLong(tradedSharesNum) * 1000);
+
+					String txAmount = ConvertUtil.toString(row.get(2));
+					assert txAmount != null;
+					txAmount = txAmount.replaceAll(",", "");
+					createDTO.setTxAmount(ConvertUtil.toLong(txAmount) * 1000);
+
+					String openingPrice = ConvertUtil.toString(row.get(3));
+					createDTO.setOpeningPrice(ConvertUtil.toDouble(openingPrice));
+
+					String highestPrice = ConvertUtil.toString(row.get(4));
+					createDTO.setHighestPrice(ConvertUtil.toDouble(highestPrice));
+
+					String lowestPrice = ConvertUtil.toString(row.get(5));
+					createDTO.setLowestPrice(ConvertUtil.toDouble(lowestPrice));
+
+					String closingPrice = ConvertUtil.toString(row.get(6));
+					createDTO.setClosingPrice(ConvertUtil.toDouble(closingPrice));
+
+					String changeSpread = ConvertUtil.toString(row.get(7));
+					createDTO.setChangeSpread(ConvertUtil.toDouble(changeSpread));
+
+					String txNumber = ConvertUtil.toString(row.get(8));
+					assert txNumber != null;
+					txNumber = txNumber.replace(",", "");
+					createDTO.setTxNumber(ConvertUtil.toLong(txNumber));
+
+					createDTOList.add(createDTO);
+				} catch (Exception ex) {
+					logger.error(ex.getMessage(), ex);
+				}
+
+			}
+
+		} catch (Exception ex) {
+			logger.debug(queryResponseBody);
+			logger.error(ex.getMessage(), ex);
+		}
+
+		return createDTOList;
+	}
+
 	public void createExchangeDayReport(ExchangeDayReportCreateDTO createDTO) {
 		this.exchangeDayReportDao.createExchangeDayReport(createDTO.toEntity());
 	}
@@ -237,7 +317,49 @@ public class ExchangeDayReportManager {
 				try {
 					String respBody = querySIIStockExchangeDayReport(listedSecurity.getCompanyCode(), LocalDate.of(year, month, 1));
 
-					List<ExchangeDayReportCreateDTO> exchangeDayReportCreateDTOS = parseStockExchangeDayReport(respBody);
+					List<ExchangeDayReportCreateDTO> exchangeDayReportCreateDTOS = parseSIIStockExchangeDayReport(respBody);
+					if (exchangeDayReportCreateDTOS == null) continue;
+
+					for (ExchangeDayReportCreateDTO exchangeDayReportCreateDTO : exchangeDayReportCreateDTOS) {
+						if (isExchangeDayReportExist(exchangeDayReportCreateDTO.getCompanyCode(), exchangeDayReportCreateDTO.getDate())) {
+							continue;
+						}
+
+						createExchangeDayReport(exchangeDayReportCreateDTO);
+
+					}
+
+					success = true; // 成功結束
+
+				} catch (Exception ex) {
+					logger.error(ex.getMessage(), ex);
+					errorCount++;
+					// 失敗了, 等三分鐘再繼續
+					Thread.sleep(3 * 60 * 1000);
+				}
+			} while (!success && errorCount < 3); // 失敗再重新嘗試, 至多嘗試三次
+
+			if (errorCount >= 3) {
+				throw new RuntimeException("Failed on " + listedSecurity.getCompanyCode());
+			}
+
+		}
+	}
+
+	public void crawlAllAndCreateForOTC(int year, int month) throws InterruptedException {
+
+		List<ListedSecurityDTO> listedSecurities = listedSecurityManager.listListedSecuritiesByMarketCat(MarketCat.OTC.getValue());
+
+		for (ListedSecurityDTO listedSecurity : listedSecurities) {
+
+			int errorCount = 0;
+			boolean success = false;
+
+			do {
+				try {
+					String respBody = queryOTCStockExchangeDayReport(listedSecurity.getCompanyCode(), LocalDate.of(year, month, 1));
+
+					List<ExchangeDayReportCreateDTO> exchangeDayReportCreateDTOS = parseOTCStockExchangeDayReport(respBody);
 					if (exchangeDayReportCreateDTOS == null) continue;
 
 					for (ExchangeDayReportCreateDTO exchangeDayReportCreateDTO : exchangeDayReportCreateDTOS) {
