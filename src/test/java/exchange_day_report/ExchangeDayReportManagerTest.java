@@ -3,10 +3,14 @@ package exchange_day_report;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import tw.kgips.dto.exchange_day_report.ExchangeDayReportCreateDTO;
 import tw.kgips.manager.ExchangeDayReportManager;
+import tw.kgips.thread.OTCCrawlerThread;
+import tw.kgips.thread.SIICrawlerThread;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -21,6 +25,12 @@ public class ExchangeDayReportManagerTest {
 
 	@Autowired
 	ExchangeDayReportManager exchangeDayReportManager;
+
+	@Autowired
+	private ApplicationContext applicationContext;
+
+	@Autowired
+	private ThreadPoolTaskExecutor taskExecutor;
 
 	private static final String testCompanyCodeSII = "1101";
 	private static final String testCompanyCodeOTC = "1240";
@@ -53,6 +63,20 @@ public class ExchangeDayReportManagerTest {
 		String dayReportStr = queryOTCStockExchangeDayReport(testCompanyCodeOTC, LocalDate.now());
 		System.out.println(dayReportStr);
 		List<ExchangeDayReportCreateDTO> createDTOList = parseOTCStockExchangeDayReport(dayReportStr);
+	}
+
+	@Test
+	public void testCrawlAllAndCreate() throws InterruptedException {
+
+		OTCCrawlerThread otcCrawlerThread = applicationContext.getBean(OTCCrawlerThread.class);
+		taskExecutor.execute(otcCrawlerThread);
+
+		SIICrawlerThread siiCrawlerThread = applicationContext.getBean(SIICrawlerThread.class);
+		taskExecutor.execute(siiCrawlerThread);
+
+		while (taskExecutor.getActiveCount() > 0) {
+			Thread.sleep(5000);
+		}
 	}
 
 	@Test

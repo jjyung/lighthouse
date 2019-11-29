@@ -194,7 +194,7 @@ public class ExchangeDayReportManager {
 
 					createDTOList.add(createDTO);
 				} catch (Exception ex) {
-					logger.error(ex.getMessage(), ex);
+					logger.error("Exception occurring on " + companyCode + ": " + ex.getMessage(), ex);
 				}
 
 			}
@@ -275,6 +275,7 @@ public class ExchangeDayReportManager {
 					createDTOList.add(createDTO);
 				} catch (Exception ex) {
 					logger.error(ex.getMessage(), ex);
+					logger.error("Exception occurring on " + companyCode + ": " + ex.getMessage(), ex);
 				}
 
 			}

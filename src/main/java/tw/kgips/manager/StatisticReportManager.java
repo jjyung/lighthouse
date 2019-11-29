@@ -9,6 +9,7 @@ import tw.kgips.persistence.dao.ExchangeDayReportDao;
 import tw.kgips.persistence.dao.StatisticReportDao;
 import tw.kgips.persistence.entity.ExchangeDayReportEntity;
 import tw.kgips.persistence.entity.StatisticReportEntity;
+import tw.kgips.util.ConvertUtil;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -52,30 +53,42 @@ public class StatisticReportManager {
 
 		entity.setCompanyCode(companyCode);
 		entity.setDate(date);
-		entity.setMaxPrice5(exchangeDayReportDao.getMaxPriceOf(companyCode, date, 5));
-		entity.setMaxPrice10(exchangeDayReportDao.getMaxPriceOf(companyCode, date, 10));
-		entity.setMaxPrice20(exchangeDayReportDao.getMaxPriceOf(companyCode, date, 20));
-		entity.setMaxPrice60(exchangeDayReportDao.getMaxPriceOf(companyCode, date, 60));
-		entity.setMaxPrice120(exchangeDayReportDao.getMaxPriceOf(companyCode, date, 120));
-		entity.setMaxPrice200(exchangeDayReportDao.getMaxPriceOf(companyCode, date, 200));
-		entity.setMaxPrice240(exchangeDayReportDao.getMaxPriceOf(companyCode, date, 240));
-		entity.setMinPrice5(exchangeDayReportDao.getMinPriceOf(companyCode, date, 5));
-		entity.setMinPrice10(exchangeDayReportDao.getMinPriceOf(companyCode, date, 10));
-		entity.setMinPrice20(exchangeDayReportDao.getMinPriceOf(companyCode, date, 20));
-		entity.setMinPrice60(exchangeDayReportDao.getMinPriceOf(companyCode, date, 60));
-		entity.setMinPrice120(exchangeDayReportDao.getMinPriceOf(companyCode, date, 120));
-		entity.setMinPrice200(exchangeDayReportDao.getMinPriceOf(companyCode, date, 200));
-		entity.setMinPrice240(exchangeDayReportDao.getMinPriceOf(companyCode, date, 240));
-		entity.setAvgPrice5(exchangeDayReportDao.getAvgPriceOf(companyCode, date, 5));
-		entity.setAvgPrice10(exchangeDayReportDao.getAvgPriceOf(companyCode, date, 10));
-		entity.setAvgPrice20(exchangeDayReportDao.getAvgPriceOf(companyCode, date, 20));
-		entity.setAvgPrice60(exchangeDayReportDao.getAvgPriceOf(companyCode, date, 60));
-		entity.setAvgPrice120(exchangeDayReportDao.getAvgPriceOf(companyCode, date, 120));
-		entity.setAvgPrice200(exchangeDayReportDao.getAvgPriceOf(companyCode, date, 200));
-		entity.setAvgPrice240(exchangeDayReportDao.getAvgPriceOf(companyCode, date, 240));
-		entity.setAvgTradedSharesNum5(exchangeDayReportDao.getAvgTradedSharesNumOf(companyCode, date, 5));
-		entity.setAvgTradedSharesNum10(exchangeDayReportDao.getAvgTradedSharesNumOf(companyCode, date, 10));
-		entity.setAvgTradedSharesNum20(exchangeDayReportDao.getAvgTradedSharesNumOf(companyCode, date, 20));
+
+		Object[] maxPriceMinPriceAvgPriceAvgTradedSharesNumOf5 = exchangeDayReportDao.getMaxPriceMinPriceAvgPriceAvgTradedSharesNumOf(companyCode, date, 5);
+		Object[] maxPriceMinPriceAvgPriceAvgTradedSharesNumOf10 = exchangeDayReportDao.getMaxPriceMinPriceAvgPriceAvgTradedSharesNumOf(companyCode, date, 10);
+		Object[] maxPriceMinPriceAvgPriceAvgTradedSharesNumOf20 = exchangeDayReportDao.getMaxPriceMinPriceAvgPriceAvgTradedSharesNumOf(companyCode, date, 20);
+		Object[] maxPriceMinPriceAvgPriceAvgTradedSharesNumOf60 = exchangeDayReportDao.getMaxPriceMinPriceAvgPriceAvgTradedSharesNumOf(companyCode, date, 60);
+		Object[] maxPriceMinPriceAvgPriceAvgTradedSharesNumOf120 = exchangeDayReportDao.getMaxPriceMinPriceAvgPriceAvgTradedSharesNumOf(companyCode, date, 120);
+		Object[] maxPriceMinPriceAvgPriceAvgTradedSharesNumOf200 = exchangeDayReportDao.getMaxPriceMinPriceAvgPriceAvgTradedSharesNumOf(companyCode, date, 200);
+		Object[] maxPriceMinPriceAvgPriceAvgTradedSharesNumOf240 = exchangeDayReportDao.getMaxPriceMinPriceAvgPriceAvgTradedSharesNumOf(companyCode, date, 240);
+
+		entity.setMaxPrice5(ConvertUtil.toDouble(maxPriceMinPriceAvgPriceAvgTradedSharesNumOf5[0]));
+		entity.setMaxPrice10(ConvertUtil.toDouble(maxPriceMinPriceAvgPriceAvgTradedSharesNumOf10[0]));
+		entity.setMaxPrice20(ConvertUtil.toDouble(maxPriceMinPriceAvgPriceAvgTradedSharesNumOf20[0]));
+		entity.setMaxPrice60(ConvertUtil.toDouble(maxPriceMinPriceAvgPriceAvgTradedSharesNumOf60[0]));
+		entity.setMaxPrice120(ConvertUtil.toDouble(maxPriceMinPriceAvgPriceAvgTradedSharesNumOf120[0]));
+		entity.setMaxPrice200(ConvertUtil.toDouble(maxPriceMinPriceAvgPriceAvgTradedSharesNumOf200[0]));
+		entity.setMaxPrice240(ConvertUtil.toDouble(maxPriceMinPriceAvgPriceAvgTradedSharesNumOf240[0]));
+
+		entity.setMinPrice5(ConvertUtil.toDouble(maxPriceMinPriceAvgPriceAvgTradedSharesNumOf5[1]));
+		entity.setMinPrice10(ConvertUtil.toDouble(maxPriceMinPriceAvgPriceAvgTradedSharesNumOf10[1]));
+		entity.setMinPrice20(ConvertUtil.toDouble(maxPriceMinPriceAvgPriceAvgTradedSharesNumOf20[1]));
+		entity.setMinPrice60(ConvertUtil.toDouble(maxPriceMinPriceAvgPriceAvgTradedSharesNumOf60[1]));
+		entity.setMinPrice120(ConvertUtil.toDouble(maxPriceMinPriceAvgPriceAvgTradedSharesNumOf120[1]));
+		entity.setMinPrice200(ConvertUtil.toDouble(maxPriceMinPriceAvgPriceAvgTradedSharesNumOf200[1]));
+		entity.setMinPrice240(ConvertUtil.toDouble(maxPriceMinPriceAvgPriceAvgTradedSharesNumOf240[1]));
+
+		entity.setAvgPrice5(ConvertUtil.toDouble(maxPriceMinPriceAvgPriceAvgTradedSharesNumOf5[2]));
+		entity.setAvgPrice10(ConvertUtil.toDouble(maxPriceMinPriceAvgPriceAvgTradedSharesNumOf10[2]));
+		entity.setAvgPrice20(ConvertUtil.toDouble(maxPriceMinPriceAvgPriceAvgTradedSharesNumOf20[2]));
+		entity.setAvgPrice60(ConvertUtil.toDouble(maxPriceMinPriceAvgPriceAvgTradedSharesNumOf60[2]));
+		entity.setAvgPrice120(ConvertUtil.toDouble(maxPriceMinPriceAvgPriceAvgTradedSharesNumOf120[2]));
+		entity.setAvgPrice200(ConvertUtil.toDouble(maxPriceMinPriceAvgPriceAvgTradedSharesNumOf200[2]));
+		entity.setAvgPrice240(ConvertUtil.toDouble(maxPriceMinPriceAvgPriceAvgTradedSharesNumOf240[2]));
+
+		entity.setAvgTradedSharesNum5(ConvertUtil.toLong(maxPriceMinPriceAvgPriceAvgTradedSharesNumOf5[3]));
+		entity.setAvgTradedSharesNum10(ConvertUtil.toLong(maxPriceMinPriceAvgPriceAvgTradedSharesNumOf10[3]));
+		entity.setAvgTradedSharesNum20(ConvertUtil.toLong(maxPriceMinPriceAvgPriceAvgTradedSharesNumOf20[3]));
 		entity.setAvgTradedSharesNum60(exchangeDayReportDao.getAvgTradedSharesNumOf(companyCode, date, 60));
 		entity.setAvgTradedSharesNum120(exchangeDayReportDao.getAvgTradedSharesNumOf(companyCode, date, 120));
 

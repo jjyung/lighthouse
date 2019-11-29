@@ -10,7 +10,9 @@ import tw.kgips.util.ConvertUtil;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 @Transactional
@@ -54,6 +56,24 @@ public class ExchangeDayReportDao {
 				.setParameter("companyCode", companyCode)
 				.setMaxResults(recentDays)
 				.list();
+	}
+
+	public Object[] getMaxPriceMinPriceAvgPriceAvgTradedSharesNumOf(String companyCode, LocalDate date, int days) {
+
+		return (Object[]) sessionFactory.getCurrentSession()
+				.createNativeQuery("select max(highest_price), min(lowest_price), avg(closing_price), round(avg(traded_shares_number)) " +
+						" from ( " +
+						" select * " +
+						" from exchange_day_report " +
+						" where company_code = :companyCode " +
+						" and date <= :date" +
+						" order by date desc " +
+						" limit :days " +
+						") as recent_k")
+				.setParameter("companyCode", companyCode)
+				.setParameter("date", date)
+				.setParameter("days", days)
+				.uniqueResult();
 	}
 
 	public Double getMaxPriceOf(String companyCode, LocalDate date, int days) {

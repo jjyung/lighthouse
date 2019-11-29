@@ -25,14 +25,16 @@ public class StatisticReportManagerTest {
 
     }
 
+    // TODO multi thread
     @Test
     public void testCreateAllLastStatisticReportForSII() {
-        statisticReportManager.createAllLastStatisticReportForSII(6);
+        statisticReportManager.createAllLastStatisticReportForSII(1);
     }
 
+    // TODO multi thread
     @Test
     public void testCreateAllLastStatisticReportForOTC() {
-        statisticReportManager.createAllLastStatisticReportForOTC(6);
+        statisticReportManager.createAllLastStatisticReportForOTC(1);
     }
 
 }
