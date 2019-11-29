@@ -4,6 +4,7 @@ import tw.kgips.persistence.entity.StatisticReportEntity;
 
 import java.time.LocalDate;
 
+// TODO UPDATE
 public class StatisticReportDTO {
 
     private String companyCode;
@@ -182,12 +183,6 @@ public class StatisticReportDTO {
         dto.setAvgPrice120(entity.getAvgPrice120());
         dto.setAvgPrice200(entity.getAvgPrice200());
         dto.setAvgPrice240(entity.getAvgPrice240());
-        dto.setAvgTxNum5(entity.getAvgTxNum5());
-        dto.setAvgTxNum10(entity.getAvgTxNum10());
-        dto.setAvgTxNum20(entity.getAvgTxNum20());
-        dto.setAvgTxNum60(entity.getAvgTxNum60());
-        dto.setAvgTxNum120(entity.getAvgTxNum120());
-        dto.setAvgTxNum200(entity.getAvgTxNum200());
 
         return dto;
     }

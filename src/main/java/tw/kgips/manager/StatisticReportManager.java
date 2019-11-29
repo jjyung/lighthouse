@@ -73,20 +73,11 @@ public class StatisticReportManager {
 		entity.setAvgPrice120(exchangeDayReportDao.getAvgPriceOf(companyCode, date, 120));
 		entity.setAvgPrice200(exchangeDayReportDao.getAvgPriceOf(companyCode, date, 200));
 		entity.setAvgPrice240(exchangeDayReportDao.getAvgPriceOf(companyCode, date, 240));
-		entity.setAvgTxNum5(exchangeDayReportDao.getAvgTxNumOf(companyCode, date, 5));
-		entity.setAvgTxNum10(exchangeDayReportDao.getAvgTxNumOf(companyCode, date, 10));
-		entity.setAvgTxNum20(exchangeDayReportDao.getAvgTxNumOf(companyCode, date, 20));
-		entity.setAvgTxNum60(exchangeDayReportDao.getAvgTxNumOf(companyCode, date, 60));
-		entity.setAvgTxNum120(exchangeDayReportDao.getAvgTxNumOf(companyCode, date, 120));
-		entity.setAvgTxNum200(exchangeDayReportDao.getAvgTxNumOf(companyCode, date, 200));
-		entity.setAvgTxNum240(exchangeDayReportDao.getAvgTxNumOf(companyCode, date, 240));
 		entity.setAvgTradedSharesNum5(exchangeDayReportDao.getAvgTradedSharesNumOf(companyCode, date, 5));
 		entity.setAvgTradedSharesNum10(exchangeDayReportDao.getAvgTradedSharesNumOf(companyCode, date, 10));
 		entity.setAvgTradedSharesNum20(exchangeDayReportDao.getAvgTradedSharesNumOf(companyCode, date, 20));
 		entity.setAvgTradedSharesNum60(exchangeDayReportDao.getAvgTradedSharesNumOf(companyCode, date, 60));
 		entity.setAvgTradedSharesNum120(exchangeDayReportDao.getAvgTradedSharesNumOf(companyCode, date, 120));
-		entity.setAvgTradedSharesNum200(exchangeDayReportDao.getAvgTradedSharesNumOf(companyCode, date, 200));
-		entity.setAvgTradedSharesNum240(exchangeDayReportDao.getAvgTradedSharesNumOf(companyCode, date, 240));
 
 		return entity;
 	}
@@ -105,14 +96,18 @@ public class StatisticReportManager {
 
 	}
 
-	public void createAllLastStatisticReport(int recentDays) {
+	public void createAllLastStatisticReportForSII(int recentDays) {
 
 		List<ListedSecurityDTO> listedSecurityDTOS = listedSecurityManager.listListedSecuritiesByMarketCat(MarketCat.SII.getValue());
 		for (ListedSecurityDTO listedSecurityDTO : listedSecurityDTOS) {
 			createLastStatisticReportIfNotExist(listedSecurityDTO.getCompanyCode(), recentDays);
 		}
 
-		listedSecurityDTOS = listedSecurityManager.listListedSecuritiesByMarketCat(MarketCat.OTC.getValue());
+	}
+
+	public void createAllLastStatisticReportForOTC(int recentDays) {
+
+		List<ListedSecurityDTO> listedSecurityDTOS = listedSecurityManager.listListedSecuritiesByMarketCat(MarketCat.OTC.getValue());
 		for (ListedSecurityDTO listedSecurityDTO : listedSecurityDTOS) {
 			createLastStatisticReportIfNotExist(listedSecurityDTO.getCompanyCode(), recentDays);
 		}

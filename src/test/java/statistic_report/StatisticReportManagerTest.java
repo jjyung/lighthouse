@@ -5,7 +5,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import tw.kgips.manager.MarketInfoManager;
 import tw.kgips.manager.StatisticReportManager;
 
 import java.time.LocalDate;
@@ -27,8 +26,13 @@ public class StatisticReportManagerTest {
     }
 
     @Test
-    public void testCreateAllLastStatisticReport() {
-        statisticReportManager.createAllLastStatisticReport(5);
+    public void testCreateAllLastStatisticReportForSII() {
+        statisticReportManager.createAllLastStatisticReportForSII(6);
+    }
+
+    @Test
+    public void testCreateAllLastStatisticReportForOTC() {
+        statisticReportManager.createAllLastStatisticReportForOTC(6);
     }
 
 }
