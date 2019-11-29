@@ -107,23 +107,6 @@ public class ExchangeDayReportDao {
 				.uniqueResult());
 	}
 
-	public Long getAvgTxNumOf(String companyCode, LocalDate date, int days) {
-		return ConvertUtil.toLong(sessionFactory.getCurrentSession()
-				.createNativeQuery("select round(avg(tx_number)) " +
-						" from ( " +
-						" select * " +
-						" from exchange_day_report " +
-						" where company_code = :companyCode " +
-						" and date <= :date" +
-						" order by date desc " +
-						" limit :days " +
-						") as recent_k")
-				.setParameter("companyCode", companyCode)
-				.setParameter("date", date)
-				.setParameter("days", days)
-				.uniqueResult());
-	}
-
 	public Long getAvgTradedSharesNumOf(String companyCode, LocalDate date, int days) {
 		return ConvertUtil.toLong(sessionFactory.getCurrentSession()
 				.createNativeQuery("select round(avg(traded_shares_number)) " +
