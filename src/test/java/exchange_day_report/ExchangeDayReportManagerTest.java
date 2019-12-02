@@ -9,8 +9,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import tw.kgips.dto.exchange_day_report.ExchangeDayReportCreateDTO;
 import tw.kgips.manager.ExchangeDayReportManager;
-import tw.kgips.thread.OTCCrawlerThread;
-import tw.kgips.thread.SIICrawlerThread;
+import tw.kgips.thread.CrawlerThreadForOTC;
+import tw.kgips.thread.CrawlerThreadForSII;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -68,11 +68,11 @@ public class ExchangeDayReportManagerTest {
 	@Test
 	public void testCrawlAllAndCreate() throws InterruptedException {
 
-		OTCCrawlerThread otcCrawlerThread = applicationContext.getBean(OTCCrawlerThread.class);
-		taskExecutor.execute(otcCrawlerThread);
+		CrawlerThreadForOTC crawlerThreadForOTC = applicationContext.getBean(CrawlerThreadForOTC.class);
+		taskExecutor.execute(crawlerThreadForOTC);
 
-		SIICrawlerThread siiCrawlerThread = applicationContext.getBean(SIICrawlerThread.class);
-		taskExecutor.execute(siiCrawlerThread);
+		CrawlerThreadForSII crawlerThreadForSII = applicationContext.getBean(CrawlerThreadForSII.class);
+		taskExecutor.execute(crawlerThreadForSII);
 
 		while (taskExecutor.getActiveCount() > 0) {
 			Thread.sleep(5000);

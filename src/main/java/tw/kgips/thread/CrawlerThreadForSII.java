@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
 @Component
 @Scope("prototype")
-public class SIICrawlerThread extends Thread {
+public class CrawlerThreadForSII extends Thread {
 
 	private ExchangeDayReportManager exchangeDayReportManager;
 

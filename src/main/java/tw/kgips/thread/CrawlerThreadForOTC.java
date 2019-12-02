@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
 @Component
 @Scope("prototype")
-public class OTCCrawlerThread extends Thread {
+public class CrawlerThreadForOTC extends Thread {
 
 	private ExchangeDayReportManager exchangeDayReportManager;
 
