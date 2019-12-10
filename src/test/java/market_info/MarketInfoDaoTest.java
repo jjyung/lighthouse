@@ -4,16 +4,17 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+import tw.kgips.config.AppConfig;
 import tw.kgips.persistence.dao.MarketInfoDao;
 import tw.kgips.persistence.entity.MarketInfoEntity;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"file:src/main/webapp/WEB-INF/spring/spring-core-config.xml"})
+@SpringBootTest(classes = {AppConfig.class})
+@RunWith(SpringRunner.class)
 public class MarketInfoDaoTest {
 
     @Autowired

@@ -10,9 +10,7 @@ import tw.kgips.util.ConvertUtil;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Repository
 @Transactional

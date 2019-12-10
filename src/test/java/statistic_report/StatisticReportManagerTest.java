@@ -3,18 +3,19 @@ package statistic_report;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
+import tw.kgips.config.AppConfig;
 import tw.kgips.manager.StatisticReportManager;
 import tw.kgips.thread.StatisticThreadForOTC;
 import tw.kgips.thread.StatisticThreadForSII;
 
 import java.time.LocalDate;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"file:src/main/webapp/WEB-INF/spring/spring-core-config.xml"})
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = {AppConfig.class})
 public class StatisticReportManagerTest {
 
 	private final String testCompanyCode = "1101";

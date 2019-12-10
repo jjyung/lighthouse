@@ -3,10 +3,11 @@ package exchange_day_report;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
+import tw.kgips.config.AppConfig;
 import tw.kgips.dto.exchange_day_report.ExchangeDayReportCreateDTO;
 import tw.kgips.manager.ExchangeDayReportManager;
 import tw.kgips.thread.CrawlerThreadForOTC;
@@ -19,8 +20,8 @@ import java.util.List;
 
 import static tw.kgips.manager.ExchangeDayReportManager.*;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"file:src/main/webapp/WEB-INF/spring/spring-core-config.xml"})
+@SpringBootTest(classes = {AppConfig.class})
+@RunWith(SpringRunner.class)
 public class ExchangeDayReportManagerTest {
 
 	@Autowired

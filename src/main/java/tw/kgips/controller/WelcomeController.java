@@ -25,12 +25,12 @@ public class WelcomeController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String index(Map<String, Object> model) {
 
-		logger.debug("index() is executed!");
+		logger.debug("welcome() is executed!");
 
 		model.put("title", helloWorldService.getTitle(""));
-		model.put("msg", helloWorldService.getDesc());
+		model.put("message", helloWorldService.getDesc());
 
-		return "index";
+		return "welcome";
 	}
 
 	@RequestMapping(value = "/hello/{name:.+}", method = RequestMethod.GET)
@@ -39,10 +39,10 @@ public class WelcomeController {
 		logger.debug(String.format("hello() is executed - %s {}", name));
 
 		ModelAndView model = new ModelAndView();
-		model.setViewName("index");
+		model.setViewName("welcome");
 
 		model.addObject("title", helloWorldService.getTitle(name));
-		model.addObject("msg", helloWorldService.getDesc());
+		model.addObject("message", helloWorldService.getDesc());
 
 		return model;
 

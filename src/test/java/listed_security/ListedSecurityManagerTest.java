@@ -4,15 +4,14 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import tw.kgips.dto.listed_security.ListedSecurityDTO;
+import tw.kgips.config.AppConfig;
 import tw.kgips.dto.listed_security.MarketCat;
 import tw.kgips.manager.ListedSecurityManager;
-import tw.kgips.manager.MarketInfoManager;
 
+@SpringBootTest(classes = {AppConfig.class})
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"file:src/main/webapp/WEB-INF/spring/spring-core-config.xml"})
 public class ListedSecurityManagerTest {
 
 	@Autowired
