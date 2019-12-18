@@ -3,10 +3,7 @@ package tw.kgips.thread;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import tw.kgips.manager.ExchangeDayReportManager;
 import tw.kgips.manager.StatisticReportManager;
-
-import java.time.LocalDate;
 
 @Component
 @Scope("prototype")
