@@ -5,11 +5,14 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tw.kgips.util.ConvertUtil;
 import tw.kgips.util.JsoupUtil;
 import tw.kgips.util.Util;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.time.OffsetDateTime;
@@ -18,95 +21,101 @@ import java.util.Objects;
 
 public class FutureExchange {
 
-	private static String getHtmlFile(String filename) throws Exception {
-		ClassLoader classLoader = FutureExchange.class.getClassLoader();
-		File file = new File(Objects.requireNonNull(classLoader.getResource(filename)).getFile());
-		return new String(Files.readAllBytes(file.toPath()));
-	}
+    public static Logger logger = LoggerFactory.getLogger(FutureExchange.class);
 
-	private static Document getOfflineDoc(String filename) throws Exception {
-		return Jsoup.parse(getHtmlFile(filename));
-	}
+    private static String getHtmlFile(String filename) throws Exception {
+        ClassLoader classLoader = FutureExchange.class.getClassLoader();
+        File file = new File(Objects.requireNonNull(classLoader.getResource(filename)).getFile());
+        return new String(Files.readAllBytes(file.toPath()));
+    }
 
-	// TODO check date
-	// 外資淨多單
-	public static Long getFININetAmount() throws Exception {
+    private static Document getOfflineDoc(String filename) throws Exception {
+        return Jsoup.parse(getHtmlFile(filename));
+    }
 
-		Util.setSSL();
+    // TODO check date
+    // 外資淨多單
+    public static Long getFININetAmount() throws IOException {
 
-		Document doc = Jsoup.connect("https://www.taifex.com.tw/cht/3/futContractsDate")
-				.timeout(30000)
-				.userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36")
-				.get();
+        Util.setSSL();
 
-		Element table = JsoupUtil.selectFirstRecursively(doc, ".table_f");
+        Document doc = Jsoup.connect("https://www.taifex.com.tw/cht/3/futContractsDate")
+            .timeout(30000)
+            .userAgent(
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36")
+            .get();
 
-		if (table == null) {
-			throw new RuntimeException("不符期待的 HTML 內容，網頁格式可能有變動。");
-		}
+        Element table = JsoupUtil.selectFirstRecursively(doc, ".table_f");
 
-		Elements trs = table.selectFirst("tbody").select("tr");
-		// 外資
-		Element tr = trs.get(5);
-		// 多空淨額
-		Element net = ((Element) tr.childNodes().get(23)).selectFirst("font");
+        if (table == null) {
+            throw new RuntimeException("不符期待的 HTML 內容，網頁格式可能有變動。");
+        }
 
-		String netString = ((TextNode) net.childNode(0)).getWholeText().trim().replace(",", "");
+        Elements trs = table.selectFirst("tbody").select("tr");
+        // 外資
+        Element tr = trs.get(5);
+        // 多空淨額
+        Element net = ((Element) tr.childNodes().get(23)).selectFirst("font");
 
-		return ConvertUtil.toLong(netString);
-	}
+        String netString = ((TextNode) net.childNode(0)).getWholeText().trim().replace(",", "");
 
-	// TODO check date
-	// put/call ratio
-	public static Double getPutCallRatio() throws Exception {
+        return ConvertUtil.toLong(netString);
+    }
 
-		Util.setSSL();
+    // TODO check date
+    // put/call ratio
+    public static Double getPutCallRatio() throws IOException {
 
-		Document doc = Jsoup.connect("https://www.taifex.com.tw/cht/3/largeTraderOptQry")
-				.timeout(30000)
-				.userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36")
-				.get();
+        Util.setSSL();
 
-		Element table = JsoupUtil.selectFirstRecursively(doc, ".table_f");
+        Document doc = Jsoup.connect("https://www.taifex.com.tw/cht/3/largeTraderOptQry")
+            .timeout(30000)
+            .userAgent(
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36")
+            .get();
 
-		if (table == null) {
-			throw new RuntimeException("不符期待的 HTML 內容，網頁格式可能有變動。");
-		}
+        Element table = JsoupUtil.selectFirstRecursively(doc, ".table_f");
 
-		Elements trs = table.selectFirst("tbody").select("tr");
+        if (table == null) {
+            throw new RuntimeException("不符期待的 HTML 內容，網頁格式可能有變動。");
+        }
 
-		// 買權
-		Element mCallTr = trs.get(4);
-		String callValStr = ((TextNode) mCallTr.select("td").get(9).selectFirst("div").childNode(0)).getWholeText().trim().replace(",", "");
-		Long call = ConvertUtil.toLong(callValStr);
+        Elements trs = table.selectFirst("tbody").select("tr");
 
-		// 賣權
-		Element mPutTr = trs.get(7);
-		String putValStr = ((TextNode) mPutTr.select("td").get(9).selectFirst("div").childNode(0)).getWholeText().trim().replace(",", "");
-		Long put = ConvertUtil.toLong(putValStr);
+        // 買權
+        Element mCallTr = trs.get(4);
+        String callValStr = ((TextNode) mCallTr.select("td").get(9).selectFirst("div").childNode(0)).getWholeText()
+            .trim().replace(",", "");
+        Long call = ConvertUtil.toLong(callValStr);
 
-		if (put == null || put == 0 || call == null || call == 0) {
-			return 0.0;
-		}
+        // 賣權
+        Element mPutTr = trs.get(7);
+        String putValStr = ((TextNode) mPutTr.select("td").get(9).selectFirst("div").childNode(0)).getWholeText().trim()
+            .replace(",", "");
+        Long put = ConvertUtil.toLong(putValStr);
 
-		return put * 1.0 / call * 1.0;
-	}
+        if (put == null || put == 0 || call == null || call == 0) {
+            return 0.0;
+        }
 
-	public static void main(String[] args) throws Exception {
+        return put * 1.0 / call * 1.0;
+    }
 
-		OffsetDateTime now = OffsetDateTime.now();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd");
+    public static void main(String[] args) throws Exception {
 
-		// 小數點第二位
-		DecimalFormat df = new DecimalFormat("##.00");
+        OffsetDateTime now = OffsetDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd");
 
-		Long netBuy = ConvertUtil.toLong(TWSE.getFININetBuyAmount());
+        // 小數點第二位
+        DecimalFormat df = new DecimalFormat("##.00");
 
-		String sellBuy = netBuy > 0 ? "買" : "賣";
+        Long netBuy = ConvertUtil.toLong(TWSE.getFININetBuyAmount());
 
-		String finiNetBuyAmount = df.format(Math.abs(netBuy) / 100000000.0);
+        String sellBuy = netBuy > 0 ? "買" : "賣";
 
-		System.out.printf("%s 外資大台淨多單 %s 口，p/c %s，外資現貨%s超 %s 億。%n",
-				formatter.format(now), getFININetAmount(), df.format(getPutCallRatio()), sellBuy, finiNetBuyAmount);
-	}
+        String finiNetBuyAmount = df.format(Math.abs(netBuy) / 100000000.0);
+
+        System.out.printf("%s 外資大台淨多單 %s 口，p/c %s，外資現貨%s超 %s 億。%n",
+            formatter.format(now), getFININetAmount(), df.format(getPutCallRatio()), sellBuy, finiNetBuyAmount);
+    }
 }
