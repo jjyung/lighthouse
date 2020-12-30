@@ -6,29 +6,32 @@ import org.jsoup.nodes.TextNode;
 
 public class JsoupUtil {
 
-	public static Element selectFirstRecursively(Element startEl, String cssQuery) {
+    private JsoupUtil() {
+    }
 
-		Element selectFirst = startEl.selectFirst(cssQuery);
+    public static Element selectFirstRecursively(Element startEl, String cssQuery) {
 
-		if (selectFirst != null) {
-			return selectFirst;
-		}
+        Element selectFirst = startEl.selectFirst(cssQuery);
 
-		for (int i = 0; i < startEl.childNodeSize(); i++) {
+        if (selectFirst != null) {
+            return selectFirst;
+        }
 
-			Node child = startEl.childNodes().get(i);
+        for (int i = 0; i < startEl.childNodeSize(); i++) {
 
-			if (child instanceof TextNode) {
-				continue;
-			}
+            Node child = startEl.childNodes().get(i);
 
-			Element childQueryResult = selectFirstRecursively((Element) child, cssQuery);
-			if (childQueryResult != null) {
-				return childQueryResult;
-			}
-		}
+            if (child instanceof TextNode) {
+                continue;
+            }
 
-		return null;
-	}
+            Element childQueryResult = selectFirstRecursively((Element) child, cssQuery);
+            if (childQueryResult != null) {
+                return childQueryResult;
+            }
+        }
+
+        return null;
+    }
 
 }

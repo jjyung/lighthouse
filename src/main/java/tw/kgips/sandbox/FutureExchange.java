@@ -21,7 +21,7 @@ import java.util.Objects;
 
 public class FutureExchange {
 
-    public static Logger logger = LoggerFactory.getLogger(FutureExchange.class);
+    public static final Logger logger = LoggerFactory.getLogger(FutureExchange.class);
 
     private static String getHtmlFile(String filename) throws Exception {
         ClassLoader classLoader = FutureExchange.class.getClassLoader();
@@ -98,7 +98,7 @@ public class FutureExchange {
             return 0.0;
         }
 
-        return put * 1.0 / call * 1.0;
+        return put * 1.0D / call;
     }
 
     public static void main(String[] args) throws Exception {
