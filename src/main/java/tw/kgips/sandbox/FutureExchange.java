@@ -7,6 +7,7 @@ import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tw.kgips.exception.UnknownHtmlException;
 import tw.kgips.util.ConvertUtil;
 import tw.kgips.util.JsoupUtil;
 import tw.kgips.util.Util;
@@ -23,13 +24,13 @@ public class FutureExchange {
 
     public static final Logger logger = LoggerFactory.getLogger(FutureExchange.class);
 
-    private static String getHtmlFile(String filename) throws Exception {
+    private static String getHtmlFile(String filename) throws IOException {
         ClassLoader classLoader = FutureExchange.class.getClassLoader();
         File file = new File(Objects.requireNonNull(classLoader.getResource(filename)).getFile());
         return new String(Files.readAllBytes(file.toPath()));
     }
 
-    private static Document getOfflineDoc(String filename) throws Exception {
+    private static Document getOfflineDoc(String filename) throws IOException {
         return Jsoup.parse(getHtmlFile(filename));
     }
 
@@ -48,7 +49,7 @@ public class FutureExchange {
         Element table = JsoupUtil.selectFirstRecursively(doc, ".table_f");
 
         if (table == null) {
-            throw new RuntimeException("不符期待的 HTML 內容，網頁格式可能有變動。");
+            throw new UnknownHtmlException("不符期待的 HTML 內容，網頁格式可能有變動。");
         }
 
         Elements trs = table.selectFirst("tbody").select("tr");
@@ -77,7 +78,7 @@ public class FutureExchange {
         Element table = JsoupUtil.selectFirstRecursively(doc, ".table_f");
 
         if (table == null) {
-            throw new RuntimeException("不符期待的 HTML 內容，網頁格式可能有變動。");
+            throw new UnknownHtmlException("不符期待的 HTML 內容，網頁格式可能有變動。");
         }
 
         Elements trs = table.selectFirst("tbody").select("tr");
@@ -115,7 +116,7 @@ public class FutureExchange {
 
         String finiNetBuyAmount = df.format(Math.abs(netBuy) / 100000000.0);
 
-        System.out.printf("%s 外資大台淨多單 %s 口，p/c %s，外資現貨%s超 %s 億。%n",
-            formatter.format(now), getFININetAmount(), df.format(getPutCallRatio()), sellBuy, finiNetBuyAmount);
+        logger.info(String.format("%s 外資大台淨多單 %s 口，p/c %s，外資現貨%s超 %s 億。%n",
+            formatter.format(now), getFININetAmount(), df.format(getPutCallRatio()), sellBuy, finiNetBuyAmount));
     }
 }
