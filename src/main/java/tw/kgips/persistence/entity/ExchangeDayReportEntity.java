@@ -5,7 +5,7 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "exchange_day_report",
-        uniqueConstraints = @UniqueConstraint(name = "exchange_day_report_uk", columnNames = {"company_code", "date"}))
+    uniqueConstraints = @UniqueConstraint(name = "exchange_day_report_uk", columnNames = { "company_code", "date" }))
 public class ExchangeDayReportEntity {
 
     @Id
@@ -111,8 +111,8 @@ public class ExchangeDayReportEntity {
         return closingPrice;
     }
 
-    public void setClosingPrice(Double closeingPrice) {
-        this.closingPrice = closeingPrice;
+    public void setClosingPrice(Double closingPrice) {
+        this.closingPrice = closingPrice;
     }
 
     public Double getChangeSpread() {
