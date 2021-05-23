@@ -1,167 +1,162 @@
 package tw.kgips.persistence.dao;
 
-import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import tw.kgips.dto.DateRangeDTO;
 import tw.kgips.persistence.entity.ExchangeDayReportEntity;
 import tw.kgips.util.ConvertUtil;
 
-import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-@Transactional
-public class ExchangeDayReportDao {
+public class ExchangeDayReportDao extends AbstractHibernateDao {
 
-	private SessionFactory sessionFactory;
+    public void createExchangeDayReport(ExchangeDayReportEntity entity) {
+        getCurrentSession().save(entity);
+    }
 
-	@Autowired
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
+    public boolean isExchangeDayReportExist(String companyCode, LocalDate date) {
+        return ConvertUtil.toInt(getCurrentSession()
+            .createQuery("select count(*) " +
+                " from ExchangeDayReportEntity " +
+                " where companyCode = :companyCode and date = :date")
+            .setParameter("companyCode", companyCode)
+            .setParameter("date", date)
+            .uniqueResult()) > 0;
+    }
 
-	public void createExchangeDayReport(ExchangeDayReportEntity entity) {
-		sessionFactory.getCurrentSession().save(entity);
-	}
+    public ExchangeDayReportEntity getExchangeDayReport(String companyCode, LocalDate date) {
+        return (ExchangeDayReportEntity) getCurrentSession()
+            .createQuery("from ExchangeDayReportEntity " +
+                " where companyCode = :companyCode and date = :date")
+            .setParameter("companyCode", companyCode)
+            .setParameter("date", date)
+            .uniqueResult();
+    }
 
-	public boolean isExchangeDayReportExist(String companyCode, LocalDate date) {
-		return ConvertUtil.toInt(sessionFactory.getCurrentSession()
-				.createQuery("select count(*) " +
-						" from ExchangeDayReportEntity " +
-						" where companyCode = :companyCode and date = :date")
-				.setParameter("companyCode", companyCode)
-				.setParameter("date", date)
-				.uniqueResult()) > 0;
-	}
+    public List<ExchangeDayReportEntity> getLastExchangeDayReport(String companyCode, int recentDays) {
+        return getCurrentSession()
+            .createQuery("select exdr " +
+                " from ExchangeDayReportEntity as exdr " +
+                " where exdr.companyCode = :companyCode " +
+                " order by exdr.date desc", ExchangeDayReportEntity.class)
+            .setParameter("companyCode", companyCode)
+            .setMaxResults(recentDays)
+            .list();
+    }
 
-	public ExchangeDayReportEntity getExchangeDayReport(String companyCode, LocalDate date) {
-		return (ExchangeDayReportEntity) sessionFactory.getCurrentSession()
-				.createQuery("from ExchangeDayReportEntity " +
-						" where companyCode = :companyCode and date = :date")
-				.setParameter("companyCode", companyCode)
-				.setParameter("date", date)
-				.uniqueResult();
-	}
+    public Object[] getMaxPriceMinPriceAvgPriceAvgTradedSharesNumOf(String companyCode, LocalDate date, int days) {
 
-	public List<ExchangeDayReportEntity> getLastExchangeDayReport(String companyCode, int recentDays) {
-		return sessionFactory.getCurrentSession()
-				.createQuery("from ExchangeDayReportEntity " +
-						" where companyCode = :companyCode " +
-						" order by date desc", ExchangeDayReportEntity.class)
-				.setParameter("companyCode", companyCode)
-				.setMaxResults(recentDays)
-				.list();
-	}
+        return (Object[]) getCurrentSession()
+            .createNativeQuery(
+                "select max(highest_price), min(lowest_price), avg(closing_price), round(avg(traded_shares_number)) " +
+                    " from ( " +
+                    " select * " +
+                    " from exchange_day_report " +
+                    " where company_code = :companyCode " +
+                    " and date <= :date" +
+                    " order by date desc " +
+                    " limit :days " +
+                    ") as recent_k")
+            .setParameter("companyCode", companyCode)
+            .setParameter("date", date)
+            .setParameter("days", days)
+            .uniqueResult();
+    }
 
-	public Object[] getMaxPriceMinPriceAvgPriceAvgTradedSharesNumOf(String companyCode, LocalDate date, int days) {
+    public Double getMaxPriceOf(String companyCode, LocalDate date, int days) {
+        return ConvertUtil.toDouble(getCurrentSession()
+            .createNativeQuery("select max(highest_price) " +
+                " from ( " +
+                " select * " +
+                " from exchange_day_report " +
+                " where company_code = :companyCode " +
+                " and date <= :date" +
+                " order by date desc " +
+                " limit :days " +
+                ") as recent_k")
+            .setParameter("companyCode", companyCode)
+            .setParameter("date", date)
+            .setParameter("days", days)
+            .uniqueResult());
+    }
 
-		return (Object[]) sessionFactory.getCurrentSession()
-				.createNativeQuery("select max(highest_price), min(lowest_price), avg(closing_price), round(avg(traded_shares_number)) " +
-						" from ( " +
-						" select * " +
-						" from exchange_day_report " +
-						" where company_code = :companyCode " +
-						" and date <= :date" +
-						" order by date desc " +
-						" limit :days " +
-						") as recent_k")
-				.setParameter("companyCode", companyCode)
-				.setParameter("date", date)
-				.setParameter("days", days)
-				.uniqueResult();
-	}
+    public Double getMinPriceOf(String companyCode, LocalDate date, int days) {
+        return ConvertUtil.toDouble(getCurrentSession()
+            .createNativeQuery("select min(lowest_price) " +
+                " from ( " +
+                " select * " +
+                " from exchange_day_report " +
+                " where company_code = :companyCode " +
+                " and date <= :date" +
+                " order by date desc " +
+                " limit :days " +
+                ") as recent_k")
+            .setParameter("companyCode", companyCode)
+            .setParameter("date", date)
+            .setParameter("days", days)
+            .uniqueResult());
+    }
 
-	public Double getMaxPriceOf(String companyCode, LocalDate date, int days) {
-		return ConvertUtil.toDouble(sessionFactory.getCurrentSession()
-				.createNativeQuery("select max(highest_price) " +
-						" from ( " +
-						" select * " +
-						" from exchange_day_report " +
-						" where company_code = :companyCode " +
-						" and date <= :date" +
-						" order by date desc " +
-						" limit :days " +
-						") as recent_k")
-				.setParameter("companyCode", companyCode)
-				.setParameter("date", date)
-				.setParameter("days", days)
-				.uniqueResult());
-	}
+    public Double getAvgPriceOf(String companyCode, LocalDate date, int days) {
+        return ConvertUtil.toDouble(getCurrentSession()
+            .createNativeQuery("select avg(closing_price) " +
+                " from ( " +
+                " select * " +
+                " from exchange_day_report " +
+                " where company_code = :companyCode " +
+                " and date <= :date" +
+                " order by date desc " +
+                " limit :days " +
+                ") as recent_k")
+            .setParameter("companyCode", companyCode)
+            .setParameter("date", date)
+            .setParameter("days", days)
+            .uniqueResult());
+    }
 
-	public Double getMinPriceOf(String companyCode, LocalDate date, int days) {
-		return ConvertUtil.toDouble(sessionFactory.getCurrentSession()
-				.createNativeQuery("select min(lowest_price) " +
-						" from ( " +
-						" select * " +
-						" from exchange_day_report " +
-						" where company_code = :companyCode " +
-						" and date <= :date" +
-						" order by date desc " +
-						" limit :days " +
-						") as recent_k")
-				.setParameter("companyCode", companyCode)
-				.setParameter("date", date)
-				.setParameter("days", days)
-				.uniqueResult());
-	}
+    public Long getAvgTradedSharesNumOf(String companyCode, LocalDate date, int days) {
+        return ConvertUtil.toLong(getCurrentSession()
+            .createNativeQuery("select round(avg(traded_shares_number)) " +
+                " from ( " +
+                " select * " +
+                " from exchange_day_report " +
+                " where company_code = :companyCode " +
+                " and date <= :date" +
+                " order by date desc " +
+                " limit :days " +
+                ") as recent_k")
+            .setParameter("companyCode", companyCode)
+            .setParameter("date", date)
+            .setParameter("days", days)
+            .uniqueResult());
+    }
 
-	public Double getAvgPriceOf(String companyCode, LocalDate date, int days) {
-		return ConvertUtil.toDouble(sessionFactory.getCurrentSession()
-				.createNativeQuery("select avg(closing_price) " +
-						" from ( " +
-						" select * " +
-						" from exchange_day_report " +
-						" where company_code = :companyCode " +
-						" and date <= :date" +
-						" order by date desc " +
-						" limit :days " +
-						") as recent_k")
-				.setParameter("companyCode", companyCode)
-				.setParameter("date", date)
-				.setParameter("days", days)
-				.uniqueResult());
-	}
+    public List<ExchangeDayReportEntity> listExchangeDayReportByCompanyCodeAndDateRange(
+        String companyCode,
+        DateRangeDTO dateRangeDTO) {
 
-	public Long getAvgTradedSharesNumOf(String companyCode, LocalDate date, int days) {
-		return ConvertUtil.toLong(sessionFactory.getCurrentSession()
-				.createNativeQuery("select round(avg(traded_shares_number)) " +
-						" from ( " +
-						" select * " +
-						" from exchange_day_report " +
-						" where company_code = :companyCode " +
-						" and date <= :date" +
-						" order by date desc " +
-						" limit :days " +
-						") as recent_k")
-				.setParameter("companyCode", companyCode)
-				.setParameter("date", date)
-				.setParameter("days", days)
-				.uniqueResult());
-	}
+        String queryString = "from ExchangeDayReportEntity " +
+            " where companyCode = :companyCode" +
+            (dateRangeDTO.getStartDate() != null ?
+                " and date >" + (dateRangeDTO.isIncludeStart() ? "=" : "") + ":startDate" : "") +
+            (dateRangeDTO.getEndDate() != null ? " and date <" + (dateRangeDTO.isIncludeEnd() ? "=" : "") + ":endDate" :
+                "");
 
-	public List<ExchangeDayReportEntity> listExchangeDayReportByCompanyCodeAndDateRange(String companyCode, DateRangeDTO dateRangeDTO) {
+        Query<ExchangeDayReportEntity> query = getCurrentSession()
+            .createQuery(queryString, ExchangeDayReportEntity.class)
+            .setParameter("companyCode", companyCode);
 
-		String queryString = "from ExchangeDayReportEntity " +
-				" where companyCode = :companyCode" +
-				(dateRangeDTO.getStartDate() != null ? " and date >" + (dateRangeDTO.isIncludeStart() ? "=" : "") + ":startDate" : "") +
-				(dateRangeDTO.getEndDate() != null ? " and date <" + (dateRangeDTO.isIncludeEnd() ? "=" : "") + ":endDate" : "");
+        if (dateRangeDTO.getStartDate() != null) {
+            query.setParameter("startDate", dateRangeDTO.getStartDate());
+        }
 
-		Query<ExchangeDayReportEntity> query = sessionFactory.getCurrentSession()
-				.createQuery(queryString, ExchangeDayReportEntity.class)
-				.setParameter("companyCode", companyCode);
+        if (dateRangeDTO.getEndDate() != null) {
+            query.setParameter("endDate", dateRangeDTO.getEndDate());
+        }
 
-		if (dateRangeDTO.getStartDate() != null) {
-			query.setParameter("startDate", dateRangeDTO.getStartDate());
-		}
-
-		if (dateRangeDTO.getEndDate() != null) {
-			query.setParameter("endDate", dateRangeDTO.getEndDate());
-		}
-
-		return query.list();
-	}
+        return query.list();
+    }
 
 }

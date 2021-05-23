@@ -4,7 +4,7 @@ import org.springframework.stereotype.Repository;
 import tw.kgips.persistence.entity.HelloWorldEntity;
 
 @Repository()
-public class HelloWorldDao extends AbstractHibernateDao {
+public class CalendarEventDao extends AbstractHibernateDao {
 
     public void createHello(HelloWorldEntity helloEntity) {
         getCurrentSession().save(helloEntity);
